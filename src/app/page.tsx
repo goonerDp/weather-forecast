@@ -1,7 +1,7 @@
 import { fetchForecast } from "@/lib/weather";
-import { CitySearch } from "./city-search";
-import { WeatherCard } from "./weather-card";
-import { ThemeSwitcher } from "./theme-switcher";
+import { CitySearch } from "@/features/search/city-search";
+import { WeatherCard } from "@/features/weather/weather-card";
+import { ThemeSwitcher } from "@/features/theme/theme-switcher";
 
 export default async function Home({
   searchParams,

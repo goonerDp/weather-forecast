@@ -1,5 +1,9 @@
 This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
+## Architecture
+
+The project follows a lightweight **feature-sliced** structure: UI components are grouped by domain under `src/features/` (weather, search, theme), while Next.js routing concerns (pages, layouts, API routes) stay in `src/app/` where the framework expects them. Shared utilities and hooks live in `src/lib/`, and cross-cutting TypeScript interfaces live in `src/types.ts`. API routes remain in `app/api/` because Next.js requires them there for file-system routing; shared types stay top-level because they're used across both API routes and feature components.
+
 ## Getting Started
 
 First, run the development server:
