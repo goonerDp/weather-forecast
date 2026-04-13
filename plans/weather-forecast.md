@@ -6,7 +6,7 @@
 
 Durable decisions that apply across all phases:
 
-- **Routes**: Single page at `/` with `?city=CityName` query param. Two API routes: `/api/search?q=<query>` and `/api/weather?city=<name>`.
+- **Routes**: Single page at `/` with `?city=CityName` query param. Two API routes: `/api/search?q=<query>` and `/api/forecast?city=<name>`.
 - **Data source**: WeatherAPI.com — only the `/forecast.json` endpoint (superset of `/current`), with `days=1`. `/search.json` for autocomplete.
 - **API key**: Server-side only via `WEATHER_API_KEY` env var, never exposed to the client.
 - **Schema (weather response)**: API routes return simplified, typed responses — only the fields the UI needs (temp_c, condition text/icon, min/max temps, wind_kph, wind_dir, feelslike_c, humidity, sunrise, sunset).
@@ -26,11 +26,11 @@ The root page layout that every subsequent phase builds inside. A centered, max-
 
 ### Acceptance criteria
 
-- [ ] Centered container with a sensible max-width
-- [ ] App title/header visible
-- [ ] Placeholder area for search input and weather content
-- [ ] Responsive — looks good on mobile and desktop
-- [ ] Uses HeroUI and Tailwind, consistent with project setup
+- [x] Centered container with a sensible max-width
+- [x] App title/header visible
+- [x] Placeholder area for search input and weather content
+- [x] Responsive — looks good on mobile and desktop
+- [x] Uses HeroUI and Tailwind, consistent with project setup
 
 ---
 
@@ -40,20 +40,20 @@ The root page layout that every subsequent phase builds inside. A centered, max-
 
 ### What to build
 
-The core end-to-end flow. A search input with debounced autocomplete that calls `/api/search` and displays city suggestions (with region/country for disambiguation). Selecting a city sets `?city=CityName` in the URL and fetches weather data from `/api/weather`. The weather card displays the current temperature, weather description, and weather icon. The `/api/weather` route caches responses. Page load with `?city=` in the URL fetches weather automatically. Browser back/forward navigation works between previously viewed cities.
+The core end-to-end flow. A search input with debounced autocomplete that calls `/api/search` and displays city suggestions (with region/country for disambiguation). Selecting a city sets `?city=CityName` in the URL and fetches weather data from `/api/forecast`. The weather card displays the current temperature, weather description, and weather icon. The `/api/forecast` route caches responses. Page load with `?city=` in the URL fetches weather automatically. Browser back/forward navigation works between previously viewed cities.
 
 ### Acceptance criteria
 
-- [ ] `/api/search?q=<query>` returns city suggestions from WeatherAPI
-- [ ] `/api/weather?city=<name>` returns simplified weather data from WeatherAPI `/forecast.json`
-- [ ] `/api/weather` caches responses to reduce API calls
-- [ ] Search input shows autocomplete suggestions as the user types
+- [x] `/api/search?q=<query>` returns city suggestions from WeatherAPI
+- [x] `/api/forecast?city=<name>` returns simplified weather data from WeatherAPI `/forecast.json`
+- [x] `/api/forecast` caches responses to reduce API calls
+- [x] Search input shows autocomplete suggestions as the user types
 - [ ] Autocomplete requests are debounced
-- [ ] Suggestions include region/country for disambiguation
-- [ ] Selecting a city updates the URL to `/?city=CityName`
-- [ ] Weather card shows current temperature, description, and icon
-- [ ] Page load with `?city=` fetches and displays weather
-- [ ] Browser back/forward navigates between previously viewed cities
+- [x] Suggestions include region/country for disambiguation
+- [x] Selecting a city updates the URL to `/?city=CityName`
+- [x] Weather card shows current temperature, description, and icon
+- [x] Page load with `?city=` fetches and displays weather
+- [x] Browser back/forward navigates between previously viewed cities
 
 ---
 
