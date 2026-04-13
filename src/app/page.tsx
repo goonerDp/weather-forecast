@@ -1,4 +1,25 @@
-export default function Home() {
+import { fetchForecast } from "@/lib/weather";
+import { CitySearch } from "./city-search";
+import { WeatherCard } from "./weather-card";
+
+export default async function Home({
+  searchParams,
+}: {
+  searchParams: Promise<{ city?: string }>;
+}) {
+  const { city } = await searchParams;
+
+  let weather = null;
+  let error = null;
+
+  if (city) {
+    try {
+      weather = await fetchForecast(city);
+    } catch (e) {
+      error = e instanceof Error ? e.message : "Failed to fetch weather data";
+    }
+  }
+
   return (
     <main className="flex-1 flex flex-col items-center px-4 py-8 sm:py-12">
       <div className="w-full max-w-md flex flex-col gap-6">
@@ -11,16 +32,30 @@ export default function Home() {
           </p>
         </header>
 
-        {/* Search input area */}
         <section aria-label="City search">
-          <div className="h-12 rounded-xl bg-foreground/5" />
+          <CitySearch
+            defaultValue={
+              weather
+                ? `${weather.city}, ${weather.region}, ${weather.country}`
+                : city ?? ""
+            }
+          />
         </section>
 
-        {/* Weather content area */}
         <section aria-label="Weather details">
-          <div className="rounded-2xl border border-foreground/10 p-6 text-center text-foreground/40">
-            Enter a city name above to get started
-          </div>
+          {error && (
+            <div className="rounded-2xl border border-red-300 bg-red-50 p-6 text-center text-red-600">
+              {error}
+            </div>
+          )}
+
+          {!error && weather && <WeatherCard data={weather} />}
+
+          {!error && !weather && (
+            <div className="rounded-2xl border border-foreground/10 p-6 text-center text-foreground/40">
+              Enter a city name above to get started
+            </div>
+          )}
         </section>
       </div>
     </main>
