@@ -11,7 +11,7 @@ import {
   ListBox,
 } from "@heroui/react";
 import { useAsyncList } from "@react-stately/data";
-import type { SearchComboboxResult } from "@/types";
+import type { CitySearchResult } from "@/types";
 import type { Key } from "react";
 
 interface SearchComboboxProps {
@@ -21,7 +21,7 @@ interface SearchComboboxProps {
 export function SearchCombobox({ defaultValue = "" }: SearchComboboxProps) {
   const router = useRouter();
 
-  const list = useAsyncList<SearchComboboxResult>({
+  const list = useAsyncList<CitySearchResult>({
     initialFilterText: defaultValue,
     async load({ filterText, signal }) {
       if (!filterText || filterText.trim().length < 2) {
@@ -35,7 +35,7 @@ export function SearchCombobox({ defaultValue = "" }: SearchComboboxProps) {
 
       if (!res.ok) return { items: [] };
 
-      const data: SearchComboboxResult[] = await res.json();
+      const data: CitySearchResult[] = await res.json();
       return { items: data };
     },
   });
