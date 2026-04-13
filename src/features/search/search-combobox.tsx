@@ -10,8 +10,7 @@ import {
   Label,
   ListBox,
 } from "@heroui/react";
-import { useAsyncList } from "@react-stately/data";
-import type { CitySearchResult } from "@/types";
+import { useCitySearch } from "./use-city-search";
 import type { Key } from "react";
 
 interface SearchComboboxProps {
@@ -20,29 +19,12 @@ interface SearchComboboxProps {
 
 export function SearchCombobox({ defaultValue = "" }: SearchComboboxProps) {
   const router = useRouter();
-
-  const list = useAsyncList<CitySearchResult>({
-    initialFilterText: defaultValue,
-    async load({ filterText, signal }) {
-      if (!filterText || filterText.trim().length < 2) {
-        return { items: [] };
-      }
-
-      const res = await fetch(
-        `/api/search?q=${encodeURIComponent(filterText)}`,
-        { signal },
-      );
-
-      if (!res.ok) return { items: [] };
-
-      const data: CitySearchResult[] = await res.json();
-      return { items: data };
-    },
-  });
+  const { items, inputValue, onInputChange, clear } =
+    useCitySearch(defaultValue);
 
   function handleSelectionChange(key: Key | null) {
     if (key === null) return;
-    const city = list.items.find(
+    const city = items.find(
       (s) => `${s.name}-${s.region}-${s.country}` === key,
     );
     if (city) {
@@ -55,19 +37,19 @@ export function SearchCombobox({ defaultValue = "" }: SearchComboboxProps) {
       allowsCustomValue
       allowsEmptyCollection
       aria-label="Search for a city"
-      inputValue={list.filterText}
+      inputValue={inputValue}
       menuTrigger="input"
-      onInputChange={list.setFilterText}
+      onInputChange={onInputChange}
       onSelectionChange={handleSelectionChange}
     >
       <ComboBox.InputGroup>
         <Input placeholder="Search for a city..." className="pr-8" />
-        {list.filterText && (
+        {inputValue && (
           <CloseButton
             className="absolute right-2 size-5 [&_svg]:size-3"
             aria-label="Clear search"
             onPress={() => {
-              list.setFilterText("");
+              clear();
               router.push("/");
             }}
           />
@@ -75,7 +57,7 @@ export function SearchCombobox({ defaultValue = "" }: SearchComboboxProps) {
       </ComboBox.InputGroup>
       <ComboBox.Popover>
         <ListBox renderEmptyState={() => <EmptyState />}>
-          <Collection items={list.items}>
+          <Collection items={items}>
             {(city) => (
               <ListBox.Item
                 id={`${city.name}-${city.region}-${city.country}`}

@@ -48,7 +48,7 @@ The core end-to-end flow. A search input with debounced autocomplete that calls 
 - [x] `/api/forecast?city=<name>` returns simplified weather data from WeatherAPI `/forecast.json`
 - [x] `/api/forecast` caches responses to reduce API calls
 - [x] Search input shows autocomplete suggestions as the user types
-- [ ] Autocomplete requests are debounced
+- [x] Autocomplete requests are debounced
 - [x] Suggestions include region/country for disambiguation
 - [x] Selecting a city updates the URL to `/?city=CityName`
 - [x] Weather card shows current temperature, description, and icon
