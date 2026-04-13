@@ -1,5 +1,5 @@
 import { fetchForecast } from "@/lib/weather";
-import { CitySearch } from "@/features/search/city-search";
+import { SearchCombobox } from "@/features/search/search-combobox";
 import { WeatherCard } from "@/features/weather/weather-card";
 import { ThemeSwitcher } from "@/features/theme/theme-switcher";
 
@@ -37,7 +37,7 @@ export default async function Home({
         </header>
 
         <section aria-label="City search">
-          <CitySearch
+          <SearchCombobox
             defaultValue={
               weather
                 ? `${weather.city}, ${weather.region}, ${weather.country}`
