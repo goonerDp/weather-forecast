@@ -1,33 +1,50 @@
 import { Card } from "@heroui/react";
 import type { WeatherData } from "@/types";
+import Image from "next/image";
+import { Stat } from "./stat";
+import { getWeatherIconUrl } from "./icon-url";
 
 interface WeatherCardProps {
   data: WeatherData;
 }
 
 export function WeatherCard({ data }: WeatherCardProps) {
-  const iconUrl = data.conditionIcon.startsWith("//")
-    ? `https:${data.conditionIcon}`
-    : data.conditionIcon;
+  const iconUrl = getWeatherIconUrl(data.conditionIcon);
 
   return (
     <Card>
       <Card.Header className="flex-row items-center gap-4">
-        <img src={iconUrl} alt={data.condition} width={64} height={64} />
-        <div>
-          <Card.Title className="text-2xl">{data.city}</Card.Title>
-          <Card.Description>
-            {data.region}, {data.country}
+        <Image src={iconUrl} alt={data.condition} width={64} height={64} />
+        <div className="min-w-0 flex-1">
+          <Card.Title className="text-2xl truncate">{data.city}</Card.Title>
+          <Card.Description className="truncate">
+            {data.region ? `${data.region}, ` : ""}
+            {data.country}
           </Card.Description>
         </div>
       </Card.Header>
-      <Card.Content>
-        <div className="flex items-baseline gap-2">
-          <span className="text-5xl font-bold">
-            {Math.round(data.tempC)}&deg;
-          </span>
-          <span className="text-lg text-foreground/60">{data.condition}</span>
+      <Card.Content className="flex flex-col gap-6">
+        <div>
+          <div className="flex items-baseline gap-2">
+            <span className="text-6xl font-bold leading-none tracking-tight">
+              {Math.round(data.tempC)}&deg;
+            </span>
+            <span className="text-lg text-foreground/70">{data.condition}</span>
+          </div>
+          <div className="mt-2 text-sm text-foreground/60">
+            H: {Math.round(data.maxTempC)}&deg; &middot; L:{" "}
+            {Math.round(data.minTempC)}&deg; &middot; Feels like{" "}
+            {Math.round(data.feelsLikeC)}&deg;
+          </div>
         </div>
+        <dl className="grid grid-cols-2 gap-3">
+          <Stat label="Wind">
+            {Math.round(data.windKph)} kph {data.windDir}
+          </Stat>
+          <Stat label="Humidity">{data.humidity}%</Stat>
+          <Stat label="Sunrise">{data.sunrise}</Stat>
+          <Stat label="Sunset">{data.sunset}</Stat>
+        </dl>
       </Card.Content>
     </Card>
   );

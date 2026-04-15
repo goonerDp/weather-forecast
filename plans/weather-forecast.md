@@ -67,14 +67,14 @@ Expand the weather card to display all required data fields: daily min/max tempe
 
 ### Acceptance criteria
 
-- [ ] Min and max temperatures for the day are displayed
-- [ ] Wind speed (kph) and direction are displayed
-- [ ] Feels-like temperature is displayed
-- [ ] Humidity percentage is displayed
-- [ ] Sunrise and sunset times are displayed
-- [ ] All temperatures shown in Celsius
-- [ ] Layout is polished with clear visual hierarchy
-- [ ] Responsive on mobile and desktop
+- [x] Min and max temperatures for the day are displayed
+- [x] Wind speed (kph) and direction are displayed
+- [x] Feels-like temperature is displayed
+- [x] Humidity percentage is displayed
+- [x] Sunrise and sunset times are displayed
+- [x] All temperatures shown in Celsius
+- [x] Layout is polished with clear visual hierarchy
+- [x] Responsive on mobile and desktop
 
 ---
 
