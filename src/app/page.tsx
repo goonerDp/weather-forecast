@@ -1,7 +1,7 @@
-import { fetchForecast } from "@/lib/weather";
+import { Suspense } from "react";
 import { SearchCombobox } from "@/features/search/search-combobox";
-import { WeatherCard } from "@/features/weather/weather-card";
-import { formatLocation } from "@/features/weather/format-location";
+import { WeatherSection } from "@/features/weather/weather-section";
+import { WeatherCardSkeleton } from "@/features/weather/weather-card-skeleton";
 import { ThemeSwitcher } from "@/features/theme/theme-switcher";
 
 export default async function Home({
@@ -10,7 +10,6 @@ export default async function Home({
   searchParams: Promise<{ city?: string }>;
 }) {
   const { city } = await searchParams;
-  const forecastData = city ? await fetchForecast(city) : null;
 
   return (
     <main className="flex-1 flex flex-col items-center px-4 py-8 sm:py-12">
@@ -27,20 +26,14 @@ export default async function Home({
           </p>
         </header>
         <section aria-label="City search">
-          <SearchCombobox
-            defaultValue={
-              forecastData ? formatLocation(forecastData) : (city ?? "")
-            }
-          />
+          <SearchCombobox defaultValue={city ?? ""} />
         </section>
         <section aria-label="Weather details">
-          {forecastData && <WeatherCard data={forecastData} />}
-          {!forecastData && city && (
-            <div className="rounded-2xl border border-foreground/10 p-6 text-center text-foreground/60">
-              No results for &ldquo;{city}&rdquo;. Try another city.
-            </div>
-          )}
-          {!forecastData && !city && (
+          {city ? (
+            <Suspense key={city} fallback={<WeatherCardSkeleton />}>
+              <WeatherSection city={city} />
+            </Suspense>
+          ) : (
             <div className="rounded-2xl border border-foreground/10 p-6 text-center text-foreground/40">
               Enter a city name above to get started
             </div>

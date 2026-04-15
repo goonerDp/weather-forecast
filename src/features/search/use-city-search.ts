@@ -44,7 +44,11 @@ export function useCitySearch(defaultValue: string) {
   return {
     items: list.items,
     inputValue,
+    loadingState: list.loadingState,
+    filterText: list.filterText,
     onInputChange: handleInputChange,
     clear,
   };
 }
+
+export { MIN_QUERY_LENGTH };

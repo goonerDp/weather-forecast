@@ -88,11 +88,11 @@ Handle all non-happy-path UI states. A loading skeleton or spinner while weather
 
 ### Acceptance criteria
 
-- [ ] Loading skeleton/spinner shown while weather data is fetching
-- [ ] Error state shown with meaningful message on failure
-- [ ] Welcome/empty state shown when no city is in the URL
-- [ ] Autocomplete shows "No cities found" when query returns no results
-- [ ] Transitions between states are smooth
+- [x] Loading skeleton/spinner shown while weather data is fetching
+- [x] Error state shown with meaningful message on failure
+- [x] Welcome/empty state shown when no city is in the URL
+- [x] Autocomplete shows "No cities found" when query returns no results
+- [x] Transitions between states are smooth
 
 ---
 
