@@ -15,7 +15,7 @@ export default async function Home({
     <main className="flex-1 flex flex-col items-center px-4 py-8 sm:py-12">
       <div className="w-full max-w-md flex flex-col gap-6">
         <header className="text-center">
-          <div className="flex justify-end">
+          <div className="flex justify-end mb-2">
             <ThemeSwitcher />
           </div>
           <h1 className="text-3xl font-bold tracking-tight">
