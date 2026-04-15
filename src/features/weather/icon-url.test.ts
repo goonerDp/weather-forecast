@@ -16,7 +16,9 @@ describe("getWeatherIconUrl", () => {
 
   it("leaves absolute URLs unchanged apart from size swap", () => {
     expect(
-      getWeatherIconUrl("https://cdn.weatherapi.com/weather/64x64/night/113.png"),
+      getWeatherIconUrl(
+        "https://cdn.weatherapi.com/weather/64x64/night/113.png",
+      ),
     ).toBe("https://cdn.weatherapi.com/weather/128x128/night/113.png");
   });
 

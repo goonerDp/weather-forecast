@@ -4,7 +4,11 @@ import { formatLocation } from "./format-location";
 describe("formatLocation", () => {
   it("joins city, region, and country", () => {
     expect(
-      formatLocation({ city: "Lviv", region: "Lviv Oblast", country: "Ukraine" }),
+      formatLocation({
+        city: "Lviv",
+        region: "Lviv Oblast",
+        country: "Ukraine",
+      }),
     ).toBe("Lviv, Lviv Oblast, Ukraine");
   });
 
@@ -21,9 +25,9 @@ describe("formatLocation", () => {
   });
 
   it("omits null and whitespace-only values", () => {
-    expect(
-      formatLocation({ city: "Lviv", region: "   ", country: null }),
-    ).toBe("Lviv");
+    expect(formatLocation({ city: "Lviv", region: "   ", country: null })).toBe(
+      "Lviv",
+    );
   });
 
   it("returns empty string when all values are missing", () => {
