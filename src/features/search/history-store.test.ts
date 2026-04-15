@@ -5,7 +5,9 @@ import {
   addItem,
   getCityKey,
   readHistory,
+  removeFromHistoryWithUndo,
   removeItem,
+  undoLastRemoval,
   writeHistory,
 } from "./history-store";
 import type { CitySearchResult } from "@/types";
@@ -87,5 +89,45 @@ describe("readHistory / writeHistory", () => {
       JSON.stringify([lviv, { name: "Bad" }, null]),
     );
     expect(readHistory()).toEqual([lviv]);
+  });
+});
+
+describe("undo last removal (store)", () => {
+  beforeEach(() => {
+    window.localStorage.clear();
+  });
+  afterEach(() => {
+    window.localStorage.clear();
+  });
+
+  it("restores the last removed item when undo is called", () => {
+    writeHistory([lviv, kyiv]);
+    const { removed } = removeFromHistoryWithUndo(getCityKey(kyiv));
+    expect(removed).toEqual(kyiv);
+    expect(readHistory()).toEqual([lviv]);
+
+    const restored = undoLastRemoval();
+    expect(restored).toEqual([lviv, kyiv]);
+    expect(readHistory()).toEqual([lviv, kyiv]);
+  });
+
+  it("is a no-op when there is nothing to undo", () => {
+    writeHistory([lviv]);
+    expect(undoLastRemoval()).toBeNull();
+    expect(readHistory()).toEqual([lviv]);
+  });
+
+  it("only keeps the most recent removal undo state", () => {
+    writeHistory([lviv, kyiv, london]);
+
+    removeFromHistoryWithUndo(getCityKey(kyiv));
+    expect(readHistory()).toEqual([lviv, london]);
+
+    removeFromHistoryWithUndo(getCityKey(lviv));
+    expect(readHistory()).toEqual([london]);
+
+    const restored = undoLastRemoval();
+    expect(restored).toEqual([lviv, london]);
+    expect(readHistory()).toEqual([lviv, london]);
   });
 });

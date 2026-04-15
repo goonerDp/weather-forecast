@@ -7,6 +7,8 @@ import {
   addToHistory,
   parseHistory,
   removeFromHistory,
+  removeFromHistoryWithUndo,
+  undoLastRemoval,
 } from "./history-store";
 
 const listeners = new Set<() => void>();
@@ -65,5 +67,17 @@ export function useSearchHistory() {
     notify();
   }, []);
 
-  return { history, add, remove };
+  const removeWithUndo = useCallback((key: string) => {
+    const result = removeFromHistoryWithUndo(key);
+    notify();
+    return result;
+  }, []);
+
+  const undoRemove = useCallback(() => {
+    const result = undoLastRemoval();
+    if (result) notify();
+    return result;
+  }, []);
+
+  return { history, add, remove, removeWithUndo, undoRemove };
 }

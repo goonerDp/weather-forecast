@@ -9,13 +9,14 @@ import {
   Label,
   ListBox,
   Spinner,
+  toast,
 } from "@heroui/react";
 import { MIN_QUERY_LENGTH, useCitySearch } from "./use-city-search";
 import { useSearchHistory } from "./use-search-history";
 import { getCityKey } from "./history-store";
 import { formatLocation } from "@/features/weather/format-location";
 import type { CitySearchResult } from "@/types";
-import type { Key, MouseEvent, PointerEvent } from "react";
+import type { Key } from "react";
 
 interface SearchComboboxProps {
   defaultValue?: string;
@@ -28,7 +29,8 @@ export function SearchCombobox({ defaultValue = "" }: SearchComboboxProps) {
   const {
     history,
     add: addHistory,
-    remove: removeHistory,
+    removeWithUndo,
+    undoRemove,
   } = useSearchHistory();
 
   const query = inputValue.trim();
@@ -52,13 +54,32 @@ export function SearchCombobox({ defaultValue = "" }: SearchComboboxProps) {
     }
   };
 
-  const handleRemoveFromHistory = (
-    event: MouseEvent | PointerEvent,
-    city: CitySearchResult,
-  ) => {
-    event.stopPropagation();
-    event.preventDefault();
-    removeHistory(getCityKey(city));
+  const handleRemoveFromHistory = (city: CitySearchResult) => {
+    const key = getCityKey(city);
+    const { removed } = removeWithUndo(key);
+
+    if (!removed) {
+      return;
+    }
+
+    const toastId = toast(
+      <div>Removed {removed.name} from recent search</div>,
+      {
+        description: "Undo to add it back",
+        timeout: 500000,
+        actionProps: {
+          children: "Undo",
+          variant: "tertiary",
+          onPress: () => {
+            const restored = undoRemove();
+
+            if (restored) {
+              toast.close(toastId);
+            }
+          },
+        },
+      },
+    );
   };
 
   const renderEmptyState = () => {
@@ -140,8 +161,19 @@ export function SearchCombobox({ defaultValue = "" }: SearchComboboxProps) {
                       className="size-5 shrink-0 [&_svg]:size-3"
                       aria-label={`Remove ${city.name} from history`}
                       slot={null}
-                      onPointerDown={(event) => event.stopPropagation()}
-                      onClick={(event) => handleRemoveFromHistory(event, city)}
+                      preventFocusOnPress
+                      onPress={() => {
+                        handleRemoveFromHistory(city);
+                      }}
+                      onClick={(event) => {
+                        event.stopPropagation();
+                      }}
+                      onPointerDown={(event) => {
+                        event.stopPropagation();
+                      }}
+                      onPointerUp={(event) => {
+                        event.stopPropagation();
+                      }}
                     />
                   )}
                 </ListBox.Item>
