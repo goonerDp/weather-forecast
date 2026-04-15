@@ -106,12 +106,12 @@ A search history module backed by localStorage. When the search input is focused
 
 ### Acceptance criteria
 
-- [ ] Search history persists in localStorage across sessions
-- [ ] History shown in dropdown when input is focused and empty
-- [ ] Dropdown shows only history OR only suggestions, never both
-- [ ] Clicking a history item fetches weather for that city
-- [ ] Individual history items can be deleted
-- [ ] Duplicate cities are deduplicated (re-search moves to top)
-- [ ] History capped at 10 items, oldest evicted
-- [ ] Search history module has unit tests (add, remove, get, deduplication, max limit)
+- [x] Search history persists in localStorage across sessions
+- [x] History shown in dropdown when input is focused and empty
+- [x] Dropdown shows only history OR only suggestions, never both
+- [x] Clicking a history item fetches weather for that city
+- [x] Individual history items can be deleted
+- [x] Duplicate cities are deduplicated (re-search moves to top)
+- [x] History capped at 10 items, oldest evicted
+- [x] Search history module has unit tests (add, remove, get, deduplication, max limit)
 - [ ] (Stretch) Undo last removal via toast notification
