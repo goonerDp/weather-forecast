@@ -15,11 +15,13 @@ export async function GET(request: NextRequest) {
 
   try {
     const data = await fetchForecast(city, days);
+    if (!data) {
+      return NextResponse.json({ error: "City not found" }, { status: 404 });
+    }
     return NextResponse.json(data);
   } catch (error) {
     const message =
       error instanceof Error ? error.message : "Failed to fetch weather data";
-    const status = message === "City not found" ? 404 : 500;
-    return NextResponse.json({ error: message }, { status });
+    return NextResponse.json({ error: message }, { status: 500 });
   }
 }

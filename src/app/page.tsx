@@ -10,17 +10,7 @@ export default async function Home({
   searchParams: Promise<{ city?: string }>;
 }) {
   const { city } = await searchParams;
-
-  let weather = null;
-  let error = null;
-
-  if (city) {
-    try {
-      weather = await fetchForecast(city);
-    } catch (e) {
-      error = e instanceof Error ? e.message : "Failed to fetch weather data";
-    }
-  }
+  const forecastData = city ? await fetchForecast(city) : null;
 
   return (
     <main className="flex-1 flex flex-col items-center px-4 py-8 sm:py-12">
@@ -36,25 +26,21 @@ export default async function Home({
             Search for a city to check current conditions
           </p>
         </header>
-
         <section aria-label="City search">
           <SearchCombobox
             defaultValue={
-              weather ? formatLocation(weather) : city ?? ""
+              forecastData ? formatLocation(forecastData) : (city ?? "")
             }
           />
         </section>
-
         <section aria-label="Weather details">
-          {error && (
-            <div className="rounded-2xl border border-red-300 bg-red-50 p-6 text-center text-red-600">
-              {error}
+          {forecastData && <WeatherCard data={forecastData} />}
+          {!forecastData && city && (
+            <div className="rounded-2xl border border-foreground/10 p-6 text-center text-foreground/60">
+              No results for &ldquo;{city}&rdquo;. Try another city.
             </div>
           )}
-
-          {!error && weather && <WeatherCard data={weather} />}
-
-          {!error && !weather && (
+          {!forecastData && !city && (
             <div className="rounded-2xl border border-foreground/10 p-6 text-center text-foreground/40">
               Enter a city name above to get started
             </div>

@@ -6,7 +6,7 @@ const MAX_DAYS = 3;
 export async function fetchForecast(
   city: string,
   days: number = 1,
-): Promise<WeatherData> {
+): Promise<WeatherData | null> {
   const apiKey = process.env.WEATHER_API_KEY;
   if (!apiKey) {
     throw new Error("API key not configured");
@@ -21,7 +21,7 @@ export async function fetchForecast(
 
   if (!res.ok) {
     if (res.status === 400) {
-      throw new Error("City not found");
+      return null;
     }
     throw new Error("Failed to fetch weather data");
   }
