@@ -40,7 +40,13 @@ export function SearchCombobox({ defaultValue = "" }: SearchComboboxProps) {
 
   const navigateToCity = (city: CitySearchResult) => {
     addHistory(city);
-    setValue(city.name);
+    setValue(
+      formatLocation({
+        city: city.name,
+        region: city.region,
+        country: city.country,
+      }),
+    );
     router.push(`/?city=${encodeURIComponent(city.name)}`);
   };
 
@@ -198,12 +204,19 @@ export function SearchCombobox({ defaultValue = "" }: SearchComboboxProps) {
             Recent searches
           </Label>
           <TagGroup.List items={history} className="mt-1">
-            {(city) => (
-              <Tag id={getCityKey(city)} textValue={city.name}>
-                {city.name}
-                <Tag.RemoveButton />
-              </Tag>
-            )}
+            {(city) => {
+              const fullName = formatLocation({
+                city: city.name,
+                region: city.region,
+                country: city.country,
+              });
+              return (
+                <Tag id={getCityKey(city)} textValue={fullName}>
+                  {fullName}
+                  <Tag.RemoveButton />
+                </Tag>
+              );
+            }}
           </TagGroup.List>
         </TagGroup>
       )}
