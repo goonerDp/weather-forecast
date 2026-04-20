@@ -33,11 +33,7 @@ export default async function Home({
             <Suspense key={city} fallback={<WeatherCardSkeleton />}>
               <WeatherSection city={city} />
             </Suspense>
-          ) : (
-            <div className="rounded-2xl border border-foreground/10 p-6 text-center text-foreground/40">
-              Enter a city name above to get started
-            </div>
-          )}
+          ) : null}
         </section>
       </div>
     </main>

@@ -9,6 +9,8 @@ import {
   Label,
   ListBox,
   Spinner,
+  Tag,
+  TagGroup,
   toast,
 } from "@heroui/react";
 import { MIN_QUERY_LENGTH, useCitySearch } from "./use-city-search";
@@ -18,13 +20,16 @@ import { formatLocation } from "@/features/weather/format-location";
 import type { CitySearchResult } from "@/types";
 import type { Key } from "react";
 
+type AriaKey = string | number;
+type Selection = "all" | Set<AriaKey>;
+
 interface SearchComboboxProps {
   defaultValue?: string;
 }
 
 export function SearchCombobox({ defaultValue = "" }: SearchComboboxProps) {
   const router = useRouter();
-  const { items, inputValue, loadingState, onInputChange, clear } =
+  const { items, inputValue, loadingState, onInputChange, clear, setValue } =
     useCitySearch(defaultValue);
   const {
     history,
@@ -33,12 +38,9 @@ export function SearchCombobox({ defaultValue = "" }: SearchComboboxProps) {
     undoRemove,
   } = useSearchHistory();
 
-  const query = inputValue.trim();
-  const shouldShowHistory = query.length === 0 && history.length > 0;
-  const displayItems: CitySearchResult[] = shouldShowHistory ? history : items;
-
   const navigateToCity = (city: CitySearchResult) => {
     addHistory(city);
+    setValue(city.name);
     router.push(`/?city=${encodeURIComponent(city.name)}`);
   };
 
@@ -47,15 +49,41 @@ export function SearchCombobox({ defaultValue = "" }: SearchComboboxProps) {
       return;
     }
 
-    const city = displayItems.find((cityItem) => getCityKey(cityItem) === key);
+    const city = items.find((cityItem) => getCityKey(cityItem) === key);
 
     if (city) {
       navigateToCity(city);
     }
   };
 
-  const handleRemoveFromHistory = (city: CitySearchResult) => {
-    const key = getCityKey(city);
+  const firstKey = (keys: Selection): AriaKey | undefined => {
+    if (keys === "all") {
+      return undefined;
+    }
+    return keys.values().next().value;
+  };
+
+  const handleHistorySelect = (keys: Selection) => {
+    const key = firstKey(keys);
+
+    if (key === undefined) {
+      return;
+    }
+
+    const city = history.find((cityItem) => getCityKey(cityItem) === key);
+
+    if (city) {
+      navigateToCity(city);
+    }
+  };
+
+  const handleHistoryRemove = (keys: Set<AriaKey>) => {
+    const key = firstKey(keys);
+
+    if (typeof key !== "string") {
+      return;
+    }
+
     const { removed } = removeWithUndo(key);
 
     if (!removed) {
@@ -82,6 +110,8 @@ export function SearchCombobox({ defaultValue = "" }: SearchComboboxProps) {
     );
   };
 
+  const query = inputValue.trim();
+
   const renderEmptyState = () => {
     if (loadingState === "loading" || loadingState === "filtering") {
       return (
@@ -105,83 +135,78 @@ export function SearchCombobox({ defaultValue = "" }: SearchComboboxProps) {
   };
 
   return (
-    <ComboBox
-      allowsCustomValue
-      allowsEmptyCollection
-      aria-label="Search for a city"
-      inputValue={inputValue}
-      menuTrigger="focus"
-      onInputChange={onInputChange}
-      onChange={handleChange}
-    >
-      <ComboBox.InputGroup>
-        <Input placeholder="Search for a city..." className="pr-8" />
-        {inputValue && (
-          <CloseButton
-            className="absolute right-2 size-5 [&_svg]:size-3"
-            aria-label="Clear search"
-            onPress={() => {
-              clear();
-              router.push("/");
-            }}
-          />
-        )}
-      </ComboBox.InputGroup>
-      <ComboBox.Popover>
-        {shouldShowHistory && (
-          <div className="px-3 pt-3 pb-1 text-xs font-medium tracking-wide text-foreground/50">
-            Recent search
-          </div>
-        )}
-        <ListBox renderEmptyState={renderEmptyState}>
-          <Collection items={displayItems}>
-            {(city) => {
-              const location = formatLocation({
-                region: city.region,
-                country: city.country,
-              });
-              return (
-                <ListBox.Item
-                  id={getCityKey(city)}
-                  textValue={formatLocation({
-                    city: city.name,
-                    region: city.region,
-                    country: city.country,
-                  })}
-                  className="flex items-center justify-between gap-2"
-                >
-                  <Label className="min-w-0 flex-1 truncate">
-                    <span className="font-medium">{city.name}</span>
-                    {location && (
-                      <span className="text-foreground/50">, {location}</span>
-                    )}
-                  </Label>
-                  {shouldShowHistory && (
-                    <CloseButton
-                      className="size-5 shrink-0 [&_svg]:size-3"
-                      aria-label={`Remove ${city.name} from history`}
-                      slot={null}
-                      preventFocusOnPress
-                      onPress={() => {
-                        handleRemoveFromHistory(city);
-                      }}
-                      onClick={(event) => {
-                        event.stopPropagation();
-                      }}
-                      onPointerDown={(event) => {
-                        event.stopPropagation();
-                      }}
-                      onPointerUp={(event) => {
-                        event.stopPropagation();
-                      }}
-                    />
-                  )}
-                </ListBox.Item>
-              );
-            }}
-          </Collection>
-        </ListBox>
-      </ComboBox.Popover>
-    </ComboBox>
+    <div className="flex flex-col gap-3">
+      <ComboBox
+        allowsCustomValue
+        allowsEmptyCollection
+        aria-label="Search for a city"
+        inputValue={inputValue}
+        onInputChange={onInputChange}
+        onChange={handleChange}
+      >
+        <ComboBox.InputGroup>
+          <Input placeholder="Search for a city..." className="pr-8" />
+          {inputValue && (
+            <CloseButton
+              className="absolute right-2 size-5 [&_svg]:size-3"
+              aria-label="Clear search"
+              onPress={() => {
+                clear();
+                router.push("/");
+              }}
+            />
+          )}
+        </ComboBox.InputGroup>
+        <ComboBox.Popover>
+          <ListBox renderEmptyState={renderEmptyState}>
+            <Collection items={items}>
+              {(city) => {
+                const location = formatLocation({
+                  region: city.region,
+                  country: city.country,
+                });
+                return (
+                  <ListBox.Item
+                    id={getCityKey(city)}
+                    textValue={formatLocation({
+                      city: city.name,
+                      region: city.region,
+                      country: city.country,
+                    })}
+                  >
+                    <Label className="min-w-0 flex-1 truncate">
+                      <span className="font-medium">{city.name}</span>
+                      {location && (
+                        <span className="text-foreground/50">, {location}</span>
+                      )}
+                    </Label>
+                  </ListBox.Item>
+                );
+              }}
+            </Collection>
+          </ListBox>
+        </ComboBox.Popover>
+      </ComboBox>
+      {history.length > 0 && (
+        <TagGroup
+          selectionMode="single"
+          selectedKeys={new Set<AriaKey>()}
+          onSelectionChange={handleHistorySelect}
+          onRemove={handleHistoryRemove}
+        >
+          <Label className="text-sm font-medium tracking-wide text-foreground/60">
+            Recent searches
+          </Label>
+          <TagGroup.List items={history} className="mt-1">
+            {(city) => (
+              <Tag id={getCityKey(city)} textValue={city.name}>
+                {city.name}
+                <Tag.RemoveButton />
+              </Tag>
+            )}
+          </TagGroup.List>
+        </TagGroup>
+      )}
+    </div>
   );
 }

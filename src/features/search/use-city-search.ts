@@ -41,6 +41,12 @@ export function useCitySearch(defaultValue: string) {
     list.setFilterText("");
   }
 
+  function setValue(value: string) {
+    setInputValue(value);
+    debouncedSearch.cancel();
+    list.setFilterText(value);
+  }
+
   return {
     items: list.items,
     inputValue,
@@ -48,6 +54,7 @@ export function useCitySearch(defaultValue: string) {
     filterText: list.filterText,
     onInputChange: handleInputChange,
     clear,
+    setValue,
   };
 }
 
