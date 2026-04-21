@@ -18,6 +18,8 @@ import {
 import { MIN_QUERY_LENGTH, useCitySearch } from "./use-city-search";
 import { useSearchHistory } from "./use-search-history";
 import { getCityKey } from "./history-domain";
+import { getCityHref } from "./links";
+import { RemovedToast } from "./removed-toast";
 import { formatCity } from "@/features/weather/format-city";
 import type { CitySearchResult } from "@/types";
 import { TOAST_UNDO_TIMEOUT } from "./consts";
@@ -35,7 +37,7 @@ export function SearchCombobox({ defaultValue = "" }: SearchComboboxProps) {
   const navigateToCity = (city: CitySearchResult) => {
     addHistory(city);
     setValue(formatCity(city));
-    router.push(`/?city=${encodeURIComponent(city.name)}`);
+    router.push(getCityHref(city.name));
   };
 
   const handleChange = (key: Key | null) => {
@@ -84,23 +86,17 @@ export function SearchCombobox({ defaultValue = "" }: SearchComboboxProps) {
       return;
     }
 
-    const toastId = toast(
-      <div>
-        Removed <span className="italic text-muted">{formatCity(removed)}</span>{" "}
-        from recent search
-      </div>,
-      {
-        timeout: TOAST_UNDO_TIMEOUT,
-        actionProps: {
-          children: "Undo",
-          variant: "tertiary",
-          onPress: () => {
-            undo();
-            toast.close(toastId);
-          },
+    const toastId = toast(<RemovedToast city={removed} />, {
+      timeout: TOAST_UNDO_TIMEOUT,
+      actionProps: {
+        children: "Undo",
+        variant: "tertiary",
+        onPress: () => {
+          undo();
+          toast.close(toastId);
         },
       },
-    );
+    });
   };
 
   const query = inputValue.trim();
