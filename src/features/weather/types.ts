@@ -1,9 +1,3 @@
-export interface CitySearchResult {
-  name: string;
-  region: string;
-  country: string;
-}
-
 export interface WeatherData {
   city: string;
   region: string;

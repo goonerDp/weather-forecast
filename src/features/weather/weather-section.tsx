@@ -1,4 +1,4 @@
-import { fetchForecast } from "@/lib/weather";
+import { fetchForecast } from "./fetch-forecast";
 import { WeatherCard } from "./weather-card";
 
 export async function WeatherSection({ city }: { city: string }) {

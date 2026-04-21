@@ -13,7 +13,7 @@ import {
 import { MIN_QUERY_LENGTH, useCitySearch } from "./use-city-search";
 import { getCityKey } from "./history-domain";
 import { formatCity } from "@/lib/format-city";
-import type { CitySearchResult } from "@/types";
+import type { CitySearchResult } from "./types";
 
 type LoadingState = ReturnType<typeof useCitySearch>["loadingState"];
 

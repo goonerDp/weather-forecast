@@ -3,7 +3,7 @@ import { afterEach, describe, expect, it, vi } from "vitest";
 import { SWRConfig } from "swr";
 import type { PropsWithChildren } from "react";
 import { useCitySearch } from "./use-city-search";
-import type { CitySearchResult } from "@/types";
+import type { CitySearchResult } from "./types";
 
 const lviv: CitySearchResult = { name: "Lviv", region: "", country: "Ukraine" };
 

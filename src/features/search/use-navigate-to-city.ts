@@ -3,7 +3,7 @@
 import { useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { formatCity } from "@/lib/format-city";
-import type { CitySearchResult } from "@/types";
+import type { CitySearchResult } from "./types";
 import { getCityHref } from "./links";
 import { useSearchHistory } from "./use-search-history";
 

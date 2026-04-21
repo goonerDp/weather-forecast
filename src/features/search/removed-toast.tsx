@@ -1,5 +1,5 @@
 import { formatCity } from "@/lib/format-city";
-import type { CitySearchResult } from "@/types";
+import type { CitySearchResult } from "./types";
 
 export function RemovedToast({ city }: { city: CitySearchResult }) {
   return (

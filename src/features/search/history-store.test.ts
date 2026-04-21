@@ -7,7 +7,7 @@ import {
   writeHistory,
 } from "./history-store";
 import { MAX_HISTORY, addItem, getCityKey, removeItem } from "./history-domain";
-import type { CitySearchResult } from "@/types";
+import type { CitySearchResult } from "./types";
 
 const lviv: CitySearchResult = { name: "Lviv", region: "", country: "Ukraine" };
 const kyiv: CitySearchResult = { name: "Kyiv", region: "", country: "Ukraine" };

@@ -1,4 +1,4 @@
-import type { WeatherData } from "@/types";
+import type { WeatherData } from "./types";
 
 const REVALIDATE_SECONDS = 900; // 15 minutes
 const MAX_DAYS = 3;

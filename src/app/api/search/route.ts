@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import type { CitySearchResult } from "@/types";
+import type { CitySearchResult } from "@/features/search/types";
 
 export async function GET(request: NextRequest) {
   const q = request.nextUrl.searchParams.get("q");

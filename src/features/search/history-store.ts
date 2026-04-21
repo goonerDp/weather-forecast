@@ -1,4 +1,4 @@
-import type { CitySearchResult } from "@/types";
+import type { CitySearchResult } from "./types";
 import {
   MAX_HISTORY,
   addItem,

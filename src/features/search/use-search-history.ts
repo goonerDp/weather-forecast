@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useSyncExternalStore } from "react";
-import type { CitySearchResult } from "@/types";
+import type { CitySearchResult } from "./types";
 import {
   STORAGE_KEY,
   addToHistory,

@@ -1,5 +1,5 @@
 import { Card } from "@heroui/react";
-import type { WeatherData } from "@/types";
+import type { WeatherData } from "./types";
 import Image from "next/image";
 import { Stat } from "./stat";
 import { getWeatherIconUrl } from "./icon-url";

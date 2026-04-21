@@ -1,4 +1,4 @@
-import type { CitySearchResult } from "@/types";
+import type { CitySearchResult } from "@/features/search/types";
 
 export function formatCity(city: Partial<CitySearchResult>): string {
   return [city.name, city.region, city.country]

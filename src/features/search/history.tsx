@@ -13,7 +13,7 @@ import { useSearchHistory } from "./use-search-history";
 import { formatCity } from "@/lib/format-city";
 import { RemovedToast } from "./removed-toast";
 import { TOAST_UNDO_TIMEOUT } from "./consts";
-import type { CitySearchResult } from "@/types";
+import type { CitySearchResult } from "./types";
 
 interface HistoryProps {
   onSelect: (city: CitySearchResult) => void;
