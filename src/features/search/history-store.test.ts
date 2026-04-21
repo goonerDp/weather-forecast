@@ -7,7 +7,7 @@ import {
   readHistory,
   removeFromHistoryWithUndo,
   removeItem,
-  undoLastRemoval,
+  restoreHistoryItem,
   writeHistory,
 } from "./history-store";
 import type { CitySearchResult } from "@/types";
@@ -92,7 +92,7 @@ describe("readHistory / writeHistory", () => {
   });
 });
 
-describe("undo last removal (store)", () => {
+describe("undo removal (store)", () => {
   beforeEach(() => {
     window.localStorage.clear();
   });
@@ -100,34 +100,42 @@ describe("undo last removal (store)", () => {
     window.localStorage.clear();
   });
 
-  it("restores the last removed item when undo is called", () => {
+  it("reinserts a removed item at its original index", () => {
     writeHistory([lviv, kyiv]);
-    const { removed } = removeFromHistoryWithUndo(getCityKey(kyiv));
+    const { removed, removedIndex } = removeFromHistoryWithUndo(
+      getCityKey(kyiv),
+    );
     expect(removed).toEqual(kyiv);
+    expect(removedIndex).toBe(1);
     expect(readHistory()).toEqual([lviv]);
 
-    const restored = undoLastRemoval();
+    const restored = restoreHistoryItem(removed!, removedIndex);
     expect(restored).toEqual([lviv, kyiv]);
     expect(readHistory()).toEqual([lviv, kyiv]);
   });
 
-  it("is a no-op when there is nothing to undo", () => {
+  it("reports no removal when the key is not present", () => {
     writeHistory([lviv]);
-    expect(undoLastRemoval()).toBeNull();
-    expect(readHistory()).toEqual([lviv]);
+    const { removed, removedIndex } = removeFromHistoryWithUndo("nope");
+    expect(removed).toBeNull();
+    expect(removedIndex).toBe(-1);
   });
 
-  it("only keeps the most recent removal undo state", () => {
+  it("supports undoing multiple removals independently", () => {
     writeHistory([lviv, kyiv, london]);
 
-    removeFromHistoryWithUndo(getCityKey(kyiv));
-    expect(readHistory()).toEqual([lviv, london]);
-
-    removeFromHistoryWithUndo(getCityKey(lviv));
+    const kyivRemoval = removeFromHistoryWithUndo(getCityKey(kyiv));
+    const lvivRemoval = removeFromHistoryWithUndo(getCityKey(lviv));
     expect(readHistory()).toEqual([london]);
 
-    const restored = undoLastRemoval();
-    expect(restored).toEqual([lviv, london]);
-    expect(readHistory()).toEqual([lviv, london]);
+    restoreHistoryItem(lvivRemoval.removed!, lvivRemoval.removedIndex);
+    restoreHistoryItem(kyivRemoval.removed!, kyivRemoval.removedIndex);
+    expect(readHistory()).toEqual([lviv, kyiv, london]);
+  });
+
+  it("is a no-op when the item is already present", () => {
+    writeHistory([lviv, kyiv]);
+    const restored = restoreHistoryItem(lviv, 0);
+    expect(restored).toEqual([lviv, kyiv]);
   });
 });

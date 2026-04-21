@@ -6,8 +6,10 @@ import {
   Collection,
   ComboBox,
   Input,
+  Key,
   Label,
   ListBox,
+  Selection,
   Spinner,
   Tag,
   TagGroup,
@@ -15,13 +17,9 @@ import {
 } from "@heroui/react";
 import { MIN_QUERY_LENGTH, useCitySearch } from "./use-city-search";
 import { useSearchHistory } from "./use-search-history";
-import { getCityKey } from "./history-store";
+import { getCityKey } from "./history-domain";
 import { formatLocation } from "@/features/weather/format-location";
 import type { CitySearchResult } from "@/types";
-import type { Key } from "react";
-
-type AriaKey = string | number;
-type Selection = "all" | Set<AriaKey>;
 
 interface SearchComboboxProps {
   defaultValue?: string;
@@ -31,12 +29,7 @@ export function SearchCombobox({ defaultValue = "" }: SearchComboboxProps) {
   const router = useRouter();
   const { items, inputValue, loadingState, onInputChange, clear, setValue } =
     useCitySearch(defaultValue);
-  const {
-    history,
-    add: addHistory,
-    removeWithUndo,
-    undoRemove,
-  } = useSearchHistory();
+  const { history, add: addHistory, removeWithUndo } = useSearchHistory();
 
   const navigateToCity = (city: CitySearchResult) => {
     addHistory(city);
@@ -62,7 +55,7 @@ export function SearchCombobox({ defaultValue = "" }: SearchComboboxProps) {
     }
   };
 
-  const firstKey = (keys: Selection): AriaKey | undefined => {
+  const firstKey = (keys: Selection): Key | undefined => {
     if (keys === "all") {
       return undefined;
     }
@@ -83,33 +76,40 @@ export function SearchCombobox({ defaultValue = "" }: SearchComboboxProps) {
     }
   };
 
-  const handleHistoryRemove = (keys: Set<AriaKey>) => {
+  const handleHistoryRemove = (keys: Set<Key>) => {
+    console.log(keys);
     const key = firstKey(keys);
 
     if (typeof key !== "string") {
       return;
     }
 
-    const { removed } = removeWithUndo(key);
+    const { removed, undo } = removeWithUndo(key);
 
-    if (!removed) {
+    if (!removed || !undo) {
       return;
     }
 
+    // TODO: refactor to same structure
+    const removedLabel = formatLocation({
+      city: removed.name,
+      region: removed.region,
+      country: removed.country,
+    });
+
     const toastId = toast(
-      <div>Removed {removed.name} from recent search</div>,
+      <div>
+        Removed <span className="italic text-muted">{removedLabel}</span> from
+        recent search
+      </div>,
       {
-        description: "Undo to add it back",
         timeout: 500000,
         actionProps: {
           children: "Undo",
           variant: "tertiary",
           onPress: () => {
-            const restored = undoRemove();
-
-            if (restored) {
-              toast.close(toastId);
-            }
+            undo();
+            toast.close(toastId);
           },
         },
       },
@@ -196,7 +196,7 @@ export function SearchCombobox({ defaultValue = "" }: SearchComboboxProps) {
       {history.length > 0 && (
         <TagGroup
           selectionMode="single"
-          selectedKeys={new Set<AriaKey>()}
+          selectedKeys={new Set<Key>()}
           onSelectionChange={handleHistorySelect}
           onRemove={handleHistoryRemove}
         >

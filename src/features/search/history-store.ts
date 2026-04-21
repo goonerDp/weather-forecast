@@ -2,14 +2,12 @@ import type { CitySearchResult } from "@/types";
 import {
   MAX_HISTORY,
   addItem,
+  insertItemAt,
   removeItem,
   removeItemWithUndo,
 } from "./history-domain";
 
 export const STORAGE_KEY = "weather-forecast:history";
-export { MAX_HISTORY, addItem } from "./history-domain";
-export { getCityKey } from "./history-domain";
-export { removeItem } from "./history-domain";
 
 export function parseHistory(
   raw: string | null | undefined,
@@ -73,7 +71,9 @@ export function mutateHistory(
   mutate: (prev: CitySearchResult[]) => CitySearchResult[],
 ): CitySearchResult[] {
   const next = mutate(readHistory());
+
   writeHistory(next);
+
   return next;
 }
 
@@ -88,41 +88,26 @@ export function removeFromHistory(key: string): CitySearchResult[] {
   return mutateHistory((prev) => removeItem(prev, key));
 }
 
-type UndoState = {
-  snapshot: CitySearchResult[];
-  removedKey: string;
-} | null;
-
-let lastRemoval: UndoState = null;
-
 export function removeFromHistoryWithUndo(key: string): {
-  next: CitySearchResult[];
   removed: CitySearchResult | null;
+  removedIndex: number;
 } {
   let removed: CitySearchResult | null = null;
+  let removedIndex = -1;
 
-  const next = mutateHistory((prev) => {
+  mutateHistory((prev) => {
     const result = removeItemWithUndo(prev, key);
     removed = result.removed;
-
-    if (result.removed) {
-      lastRemoval = { snapshot: result.undoSnapshot, removedKey: key };
-    }
-
+    removedIndex = result.removedIndex;
     return result.next;
   });
 
-  return { next, removed };
+  return { removed, removedIndex };
 }
 
-export function undoLastRemoval(): CitySearchResult[] | null {
-  if (!lastRemoval) {
-    return null;
-  }
-
-  const snapshot = lastRemoval.snapshot;
-  lastRemoval = null;
-  writeHistory(snapshot);
-
-  return snapshot;
+export function restoreHistoryItem(
+  item: CitySearchResult,
+  index: number,
+): CitySearchResult[] {
+  return mutateHistory((prev) => insertItemAt(prev, item, index));
 }

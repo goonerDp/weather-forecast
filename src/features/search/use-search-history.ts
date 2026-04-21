@@ -8,20 +8,26 @@ import {
   parseHistory,
   removeFromHistory,
   removeFromHistoryWithUndo,
-  undoLastRemoval,
+  restoreHistoryItem,
 } from "./history-store";
 
 const listeners = new Set<() => void>();
 
 function notify() {
-  for (const listener of listeners) listener();
+  for (const listener of listeners) {
+    listener();
+  }
 }
 
 function subscribe(listener: () => void) {
   listeners.add(listener);
+
   const onStorage = (event: StorageEvent) => {
-    if (event.key === STORAGE_KEY) listener();
+    if (event.key === STORAGE_KEY) {
+      listener();
+    }
   };
+
   window.addEventListener("storage", onStorage);
 
   return () => {
@@ -68,16 +74,22 @@ export function useSearchHistory() {
   }, []);
 
   const removeWithUndo = useCallback((key: string) => {
-    const result = removeFromHistoryWithUndo(key);
+    const { removed, removedIndex } = removeFromHistoryWithUndo(key);
     notify();
-    return result;
+
+    const undo =
+      removed && removedIndex !== -1
+        ? () => {
+            const restored = restoreHistoryItem(removed, removedIndex);
+
+            notify();
+
+            return restored;
+          }
+        : null;
+
+    return { removed, undo };
   }, []);
 
-  const undoRemove = useCallback(() => {
-    const result = undoLastRemoval();
-    if (result) notify();
-    return result;
-  }, []);
-
-  return { history, add, remove, removeWithUndo, undoRemove };
+  return { history, add, remove, removeWithUndo };
 }

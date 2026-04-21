@@ -30,15 +30,32 @@ export function removeItemWithUndo(
 ): {
   next: CitySearchResult[];
   removed: CitySearchResult | null;
-  undoSnapshot: CitySearchResult[];
+  removedIndex: number;
 } {
   const idx = list.findIndex((entry) => getCityKey(entry) === key);
+
   if (idx === -1) {
-    return { next: list, removed: null, undoSnapshot: list };
+    return { next: list, removed: null, removedIndex: -1 };
   }
 
   const removed = list[idx] ?? null;
   const next = list.filter((entry) => getCityKey(entry) !== key);
 
-  return { next, removed, undoSnapshot: list };
+  return { next, removed, removedIndex: idx };
+}
+
+export function insertItemAt(
+  list: CitySearchResult[],
+  item: CitySearchResult,
+  index: number,
+): CitySearchResult[] {
+  const key = getCityKey(item);
+
+  if (list.some((entry) => getCityKey(entry) === key)) {
+    return list;
+  }
+
+  const clamped = Math.min(Math.max(index, 0), list.length);
+
+  return [...list.slice(0, clamped), item, ...list.slice(clamped)];
 }
