@@ -3,7 +3,7 @@ import { useAsyncList } from "@react-stately/data";
 import { useDebouncedCallback } from "use-debounce";
 import type { CitySearchResult } from "@/types";
 
-const MIN_QUERY_LENGTH = 2;
+export const MIN_QUERY_LENGTH = 2;
 const DEBOUNCE_MS = 300;
 
 export function useCitySearch(defaultValue: string) {
@@ -57,5 +57,3 @@ export function useCitySearch(defaultValue: string) {
     setValue,
   };
 }
-
-export { MIN_QUERY_LENGTH };
