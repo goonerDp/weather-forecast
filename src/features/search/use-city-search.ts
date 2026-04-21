@@ -1,59 +1,60 @@
-import { useState } from "react";
-import { useAsyncList } from "@react-stately/data";
-import { useDebouncedCallback } from "use-debounce";
+import { useCallback, useState } from "react";
+import useSWR from "swr";
+import { useDebounce } from "use-debounce";
 import type { CitySearchResult } from "@/types";
 
 export const MIN_QUERY_LENGTH = 2;
 const DEBOUNCE_MS = 300;
 
+export type LoadingState = "idle" | "loading" | "filtering";
+
+async function fetchCities(url: string): Promise<CitySearchResult[]> {
+  const res = await fetch(url);
+
+  if (!res.ok) {
+    return [];
+  }
+
+  return res.json();
+}
+
 export function useCitySearch(defaultValue: string) {
   const [inputValue, setInputValue] = useState(defaultValue);
+  const [debouncedQuery] = useDebounce(inputValue, DEBOUNCE_MS);
 
-  const list = useAsyncList<CitySearchResult>({
-    initialFilterText: defaultValue,
-    async load({ filterText, signal }) {
-      if (!filterText || filterText.trim().length < MIN_QUERY_LENGTH) {
-        return { items: [] };
-      }
+  const trimmedRaw = inputValue.trim();
+  const trimmedDebounced = debouncedQuery.trim();
 
-      const res = await fetch(
-        `/api/search?q=${encodeURIComponent(filterText)}`,
-        { signal },
-      );
+  const shouldFetch =
+    trimmedRaw.length >= MIN_QUERY_LENGTH &&
+    trimmedDebounced.length >= MIN_QUERY_LENGTH;
 
-      if (!res.ok) return { items: [] };
+  const key = shouldFetch
+    ? `/api/search?q=${encodeURIComponent(trimmedDebounced)}`
+    : null;
 
-      const data: CitySearchResult[] = await res.json();
-      return { items: data };
-    },
-  });
+  const { data, isLoading, isValidating } = useSWR<CitySearchResult[]>(
+    key,
+    fetchCities,
+    { keepPreviousData: true, revalidateOnFocus: false },
+  );
 
-  const debouncedSearch = useDebouncedCallback(list.setFilterText, DEBOUNCE_MS);
+  const items = shouldFetch ? (data ?? []) : [];
+  const isDebouncing = trimmedRaw !== trimmedDebounced;
+  const loadingState: LoadingState = isLoading
+    ? "loading"
+    : isDebouncing || isValidating
+      ? "filtering"
+      : "idle";
 
-  function handleInputChange(value: string) {
-    setInputValue(value);
-    debouncedSearch(value);
-  }
-
-  function clear() {
-    setInputValue("");
-    debouncedSearch.cancel();
-    list.setFilterText("");
-  }
-
-  function setValue(value: string) {
-    setInputValue(value);
-    debouncedSearch.cancel();
-    list.setFilterText(value);
-  }
+  const clear = useCallback(() => setInputValue(""), []);
 
   return {
-    items: list.items,
+    items,
     inputValue,
-    loadingState: list.loadingState,
-    filterText: list.filterText,
-    onInputChange: handleInputChange,
+    loadingState,
+    onInputChange: setInputValue,
     clear,
-    setValue,
+    setValue: setInputValue,
   };
 }
