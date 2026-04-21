@@ -1,6 +1,6 @@
 import type { CitySearchResult } from "./types";
 
-export const MAX_HISTORY = 10;
+export const MAX_HISTORY = 5;
 
 export function getCityKey(city: CitySearchResult): string {
   return `${city.name}-${city.region}-${city.country}`;
