@@ -40,7 +40,13 @@ let cachedSnapshot: CitySearchResult[] = [];
 let cacheKey = "";
 
 function getSnapshot(): CitySearchResult[] {
-  const raw = window.localStorage.getItem(STORAGE_KEY) ?? "";
+  let raw = "";
+
+  try {
+    raw = window.localStorage.getItem(STORAGE_KEY) ?? "";
+  } catch (error) {
+    console.error("Error reading history from localStorage", error);
+  }
 
   if (raw !== cacheKey) {
     cacheKey = raw;

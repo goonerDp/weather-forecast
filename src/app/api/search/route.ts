@@ -18,7 +18,17 @@ export async function GET(request: NextRequest) {
 
   const url = `https://api.weatherapi.com/v1/search.json?key=${apiKey}&q=${encodeURIComponent(q)}`;
 
-  const res = await fetch(url, { next: { revalidate: 3600 } });
+  let res: Response;
+
+  try {
+    res = await fetch(url, { next: { revalidate: 3600 } });
+  } catch (error) {
+    console.error("Upstream search fetch failed", error);
+    return NextResponse.json(
+      { error: "Upstream search service unreachable" },
+      { status: 502 },
+    );
+  }
 
   if (!res.ok) {
     return NextResponse.json(

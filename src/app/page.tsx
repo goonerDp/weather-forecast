@@ -2,6 +2,7 @@ import { Suspense } from "react";
 import { Search } from "@/features/search/search";
 import { WeatherSection } from "@/features/weather/weather-section";
 import { WeatherCardSkeleton } from "@/features/weather/weather-card-skeleton";
+import { WeatherErrorBoundary } from "@/features/weather/weather-error-boundary";
 import { ThemeSwitcher } from "@/features/theme/theme-switcher";
 
 export default async function Home({
@@ -30,9 +31,11 @@ export default async function Home({
         </section>
         <section aria-label="Weather details">
           {city ? (
-            <Suspense key={city} fallback={<WeatherCardSkeleton />}>
-              <WeatherSection city={city} />
-            </Suspense>
+            <WeatherErrorBoundary key={city}>
+              <Suspense fallback={<WeatherCardSkeleton />}>
+                <WeatherSection city={city} />
+              </Suspense>
+            </WeatherErrorBoundary>
           ) : null}
         </section>
       </div>
