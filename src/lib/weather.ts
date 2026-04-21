@@ -44,5 +44,7 @@ export async function fetchForecast(
     humidity: raw.current.humidity,
     sunrise: forecast.astro.sunrise,
     sunset: forecast.astro.sunset,
+    forecastDate: forecast.date,
+    lastUpdated: raw.current.last_updated,
   };
 }

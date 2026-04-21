@@ -3,6 +3,7 @@ import type { WeatherData } from "@/types";
 import Image from "next/image";
 import { Stat } from "./stat";
 import { getWeatherIconUrl } from "./icon-url";
+import { formatForecastDate } from "@/lib/format-forecast-date";
 
 interface WeatherCardProps {
   data: WeatherData;
@@ -25,7 +26,10 @@ export function WeatherCard({ data }: WeatherCardProps) {
       </Card.Header>
       <Card.Content className="flex flex-col gap-6">
         <div>
-          <div className="flex items-baseline gap-2">
+          <div className="text-sm text-foreground/60">
+            {formatForecastDate(data.forecastDate)}
+          </div>
+          <div className="mt-1 flex items-baseline gap-2">
             <span className="text-6xl font-bold leading-none tracking-tight">
               {Math.round(data.tempC)}&deg;
             </span>
@@ -46,6 +50,9 @@ export function WeatherCard({ data }: WeatherCardProps) {
           <Stat label="Sunset">{data.sunset}</Stat>
         </dl>
       </Card.Content>
+      <Card.Footer className="text-xs text-foreground/50">
+        Updated {data.lastUpdated}
+      </Card.Footer>
     </Card>
   );
 }

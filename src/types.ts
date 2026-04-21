@@ -19,4 +19,6 @@ export interface WeatherData {
   humidity: number;
   sunrise: string;
   sunset: string;
+  forecastDate: string;
+  lastUpdated: string;
 }
