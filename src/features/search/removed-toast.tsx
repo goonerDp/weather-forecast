@@ -1,4 +1,4 @@
-import { formatCity } from "@/features/weather/format-city";
+import { formatCity } from "@/lib/format-city";
 import type { CitySearchResult } from "@/types";
 
 export function RemovedToast({ city }: { city: CitySearchResult }) {

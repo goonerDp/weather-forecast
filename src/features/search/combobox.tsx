@@ -12,7 +12,7 @@ import {
 } from "@heroui/react";
 import { MIN_QUERY_LENGTH, useCitySearch } from "./use-city-search";
 import { getCityKey } from "./history-domain";
-import { formatCity } from "@/features/weather/format-city";
+import { formatCity } from "@/lib/format-city";
 import type { CitySearchResult } from "@/types";
 
 type LoadingState = ReturnType<typeof useCitySearch>["loadingState"];

@@ -10,7 +10,7 @@ import {
 } from "@heroui/react";
 import { getCityKey } from "./history-domain";
 import { useSearchHistory } from "./use-search-history";
-import { formatCity } from "@/features/weather/format-city";
+import { formatCity } from "@/lib/format-city";
 import { RemovedToast } from "./removed-toast";
 import { TOAST_UNDO_TIMEOUT } from "./consts";
 import type { CitySearchResult } from "@/types";
