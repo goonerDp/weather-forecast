@@ -1,8 +1,8 @@
-import { act, cleanup, renderHook, waitFor } from "@testing-library/react";
-import { afterEach, describe, expect, it, vi } from "vitest";
+import { act, cleanup, renderHook } from "@testing-library/react";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { SWRConfig } from "swr";
 import type { PropsWithChildren } from "react";
-import { useCitySearch } from "./use-city-search";
+import { DEBOUNCE_MS, useCitySearch } from "./use-city-search";
 import type { CitySearchResult } from "./types";
 
 const lviv: CitySearchResult = { name: "Lviv", region: "", country: "Ukraine" };
@@ -13,7 +13,11 @@ function wrapper({ children }: PropsWithChildren) {
   );
 }
 
-const waitForDebounce = () => new Promise((r) => setTimeout(r, 350));
+async function flushDebounce() {
+  await act(async () => {
+    await vi.advanceTimersByTimeAsync(DEBOUNCE_MS);
+  });
+}
 
 function mockFetchOk(body: unknown) {
   const fn = vi.fn().mockResolvedValue({
@@ -24,7 +28,12 @@ function mockFetchOk(body: unknown) {
   return fn;
 }
 
+beforeEach(() => {
+  vi.useFakeTimers();
+});
+
 afterEach(() => {
+  vi.useRealTimers();
   cleanup();
   vi.restoreAllMocks();
   vi.unstubAllGlobals();
@@ -37,7 +46,7 @@ describe("useCitySearch", () => {
 
     const { result } = renderHook(() => useCitySearch(""), { wrapper });
     act(() => result.current.onInputChange("L"));
-    await waitForDebounce();
+    await flushDebounce();
 
     expect(fetchMock).not.toHaveBeenCalled();
     expect(result.current.items).toEqual([]);
@@ -50,9 +59,11 @@ describe("useCitySearch", () => {
     act(() => result.current.onInputChange("Lv"));
     expect(fetchMock).not.toHaveBeenCalled();
 
-    await waitFor(() => expect(result.current.items).toEqual([lviv]));
+    await flushDebounce();
+
     expect(fetchMock).toHaveBeenCalledTimes(1);
     expect(fetchMock).toHaveBeenCalledWith("/api/search?q=Lv");
+    expect(result.current.items).toEqual([lviv]);
   });
 
   it("reuses cache when the same query is repeated", async () => {
@@ -60,13 +71,15 @@ describe("useCitySearch", () => {
 
     const { result } = renderHook(() => useCitySearch(""), { wrapper });
     act(() => result.current.onInputChange("Lv"));
-    await waitFor(() => expect(result.current.items).toEqual([lviv]));
+    await flushDebounce();
+    expect(result.current.items).toEqual([lviv]);
 
     act(() => result.current.clear());
     expect(result.current.items).toEqual([]);
 
     act(() => result.current.onInputChange("Lv"));
-    await waitFor(() => expect(result.current.items).toEqual([lviv]));
+    await flushDebounce();
+    expect(result.current.items).toEqual([lviv]);
 
     expect(fetchMock).toHaveBeenCalledTimes(1);
   });
@@ -77,8 +90,9 @@ describe("useCitySearch", () => {
 
     const { result } = renderHook(() => useCitySearch(""), { wrapper });
     act(() => result.current.onInputChange("Lv"));
+    await flushDebounce();
 
-    await waitFor(() => expect(result.current.hasError).toBe(true));
+    expect(result.current.hasError).toBe(true);
     expect(result.current.items).toEqual([]);
   });
 
@@ -90,8 +104,9 @@ describe("useCitySearch", () => {
 
     const { result } = renderHook(() => useCitySearch(""), { wrapper });
     act(() => result.current.onInputChange("Lv"));
+    await flushDebounce();
 
-    await waitFor(() => expect(result.current.hasError).toBe(true));
+    expect(result.current.hasError).toBe(true);
     expect(result.current.items).toEqual([]);
   });
 
@@ -100,7 +115,8 @@ describe("useCitySearch", () => {
 
     const { result } = renderHook(() => useCitySearch(""), { wrapper });
     act(() => result.current.onInputChange("Lv"));
-    await waitFor(() => expect(result.current.items).toEqual([lviv]));
+    await flushDebounce();
+    expect(result.current.items).toEqual([lviv]);
 
     act(() => result.current.clear());
     expect(result.current.inputValue).toBe("");

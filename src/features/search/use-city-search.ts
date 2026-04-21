@@ -4,7 +4,7 @@ import { useDebounce } from "use-debounce";
 import type { CitySearchResult } from "./types";
 
 export const MIN_QUERY_LENGTH = 2;
-const DEBOUNCE_MS = 300;
+export const DEBOUNCE_MS = 300;
 
 export type LoadingState = "idle" | "loading" | "filtering";
 

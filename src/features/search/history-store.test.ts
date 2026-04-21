@@ -1,4 +1,4 @@
-import { afterEach, beforeEach, describe, expect, it } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import {
   STORAGE_KEY,
   readHistory,
@@ -64,6 +64,7 @@ describe("readHistory / writeHistory", () => {
   });
   afterEach(() => {
     window.localStorage.clear();
+    vi.restoreAllMocks();
   });
 
   it("round-trips a list", () => {
@@ -76,6 +77,7 @@ describe("readHistory / writeHistory", () => {
   });
 
   it("returns [] when stored value is not valid JSON", () => {
+    vi.spyOn(console, "error").mockImplementation(() => {});
     window.localStorage.setItem(STORAGE_KEY, "not-json");
     expect(readHistory()).toEqual([]);
   });
