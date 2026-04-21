@@ -18,7 +18,7 @@ export async function GET(request: NextRequest) {
 
   const url = `https://api.weatherapi.com/v1/search.json?key=${apiKey}&q=${encodeURIComponent(q)}`;
 
-  const res = await fetch(url);
+  const res = await fetch(url, { next: { revalidate: 3600 } });
 
   if (!res.ok) {
     return NextResponse.json(
@@ -37,5 +37,9 @@ export async function GET(request: NextRequest) {
     }),
   );
 
-  return NextResponse.json(results);
+  return NextResponse.json(results, {
+    headers: {
+      "Cache-Control": "public, s-maxage=3600, stale-while-revalidate=86400",
+    },
+  });
 }
