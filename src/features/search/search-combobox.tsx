@@ -18,8 +18,9 @@ import {
 import { MIN_QUERY_LENGTH, useCitySearch } from "./use-city-search";
 import { useSearchHistory } from "./use-search-history";
 import { getCityKey } from "./history-domain";
-import { formatLocation } from "@/features/weather/format-location";
+import { formatCity } from "@/features/weather/format-city";
 import type { CitySearchResult } from "@/types";
+import { TOAST_UNDO_TIMEOUT } from "./consts";
 
 interface SearchComboboxProps {
   defaultValue?: string;
@@ -33,13 +34,7 @@ export function SearchCombobox({ defaultValue = "" }: SearchComboboxProps) {
 
   const navigateToCity = (city: CitySearchResult) => {
     addHistory(city);
-    setValue(
-      formatLocation({
-        city: city.name,
-        region: city.region,
-        country: city.country,
-      }),
-    );
+    setValue(formatCity(city));
     router.push(`/?city=${encodeURIComponent(city.name)}`);
   };
 
@@ -77,7 +72,6 @@ export function SearchCombobox({ defaultValue = "" }: SearchComboboxProps) {
   };
 
   const handleHistoryRemove = (keys: Set<Key>) => {
-    console.log(keys);
     const key = firstKey(keys);
 
     if (typeof key !== "string") {
@@ -90,20 +84,13 @@ export function SearchCombobox({ defaultValue = "" }: SearchComboboxProps) {
       return;
     }
 
-    // TODO: refactor to same structure
-    const removedLabel = formatLocation({
-      city: removed.name,
-      region: removed.region,
-      country: removed.country,
-    });
-
     const toastId = toast(
       <div>
-        Removed <span className="italic text-muted">{removedLabel}</span> from
-        recent search
+        Removed <span className="italic text-muted">{formatCity(removed)}</span>{" "}
+        from recent search
       </div>,
       {
-        timeout: 500000,
+        timeout: TOAST_UNDO_TIMEOUT,
         actionProps: {
           children: "Undo",
           variant: "tertiary",
@@ -167,18 +154,15 @@ export function SearchCombobox({ defaultValue = "" }: SearchComboboxProps) {
           <ListBox renderEmptyState={renderEmptyState}>
             <Collection items={items}>
               {(city) => {
-                const location = formatLocation({
+                const location = formatCity({
                   region: city.region,
                   country: city.country,
                 });
+
                 return (
                   <ListBox.Item
                     id={getCityKey(city)}
-                    textValue={formatLocation({
-                      city: city.name,
-                      region: city.region,
-                      country: city.country,
-                    })}
+                    textValue={formatCity(city)}
                   >
                     <Label className="min-w-0 flex-1 truncate">
                       <span className="font-medium">{city.name}</span>
@@ -205,11 +189,7 @@ export function SearchCombobox({ defaultValue = "" }: SearchComboboxProps) {
           </Label>
           <TagGroup.List items={history} className="mt-1">
             {(city) => {
-              const fullName = formatLocation({
-                city: city.name,
-                region: city.region,
-                country: city.country,
-              });
+              const fullName = formatCity(city);
               return (
                 <Tag id={getCityKey(city)} textValue={fullName}>
                   {fullName}

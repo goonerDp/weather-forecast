@@ -1,15 +1,12 @@
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import {
-  MAX_HISTORY,
   STORAGE_KEY,
-  addItem,
-  getCityKey,
   readHistory,
   removeFromHistoryWithUndo,
-  removeItem,
   restoreHistoryItem,
   writeHistory,
 } from "./history-store";
+import { MAX_HISTORY, addItem, getCityKey, removeItem } from "./history-domain";
 import type { CitySearchResult } from "@/types";
 
 const lviv: CitySearchResult = { name: "Lviv", region: "", country: "Ukraine" };
