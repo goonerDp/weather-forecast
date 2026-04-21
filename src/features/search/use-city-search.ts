@@ -12,7 +12,7 @@ async function fetchCities(url: string): Promise<CitySearchResult[]> {
   const res = await fetch(url);
 
   if (!res.ok) {
-    return [];
+    throw new Error("Failed to fetch cities");
   }
 
   return res.json();
@@ -33,7 +33,7 @@ export function useCitySearch(defaultValue: string) {
     ? `/api/search?q=${encodeURIComponent(trimmedDebounced)}`
     : null;
 
-  const { data, isLoading, isValidating } = useSWR<CitySearchResult[]>(
+  const { data, error, isLoading, isValidating } = useSWR<CitySearchResult[]>(
     key,
     fetchCities,
     { keepPreviousData: true, revalidateOnFocus: false },
@@ -46,6 +46,7 @@ export function useCitySearch(defaultValue: string) {
     : isDebouncing || isValidating
       ? "filtering"
       : "idle";
+  const hasError = shouldFetch && Boolean(error);
 
   const clear = useCallback(() => setInputValue(""), []);
 
@@ -53,6 +54,7 @@ export function useCitySearch(defaultValue: string) {
     items,
     inputValue,
     loadingState,
+    hasError,
     onInputChange: setInputValue,
     clear,
     setValue: setInputValue,

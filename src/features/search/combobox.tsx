@@ -21,6 +21,7 @@ interface ComboboxProps {
   inputValue: string;
   items: CitySearchResult[];
   loadingState: LoadingState;
+  hasError: boolean;
   onInputChange: (value: string) => void;
   onSelect: (city: CitySearchResult) => void;
   onClear: () => void;
@@ -30,6 +31,7 @@ export function Combobox({
   inputValue,
   items,
   loadingState,
+  hasError,
   onInputChange,
   onSelect,
   onClear,
@@ -60,6 +62,13 @@ export function Combobox({
       return (
         <div className="p-4 text-center text-sm text-foreground/60">
           Type at least {MIN_QUERY_LENGTH} characters to search.
+        </div>
+      );
+    }
+    if (hasError) {
+      return (
+        <div className="p-4 text-center text-sm text-danger">
+          Can&rsquo;t load results. Check your connection.
         </div>
       );
     }

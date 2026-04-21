@@ -12,8 +12,15 @@ interface SearchProps {
 
 export function Search({ defaultValue = "" }: SearchProps) {
   const router = useRouter();
-  const { items, inputValue, loadingState, onInputChange, clear, setValue } =
-    useCitySearch(defaultValue);
+  const {
+    items,
+    inputValue,
+    loadingState,
+    hasError,
+    onInputChange,
+    clear,
+    setValue,
+  } = useCitySearch(defaultValue);
   const navigateToCity = useNavigateToCity(setValue);
 
   const handleClear = () => {
@@ -27,6 +34,7 @@ export function Search({ defaultValue = "" }: SearchProps) {
         inputValue={inputValue}
         items={items}
         loadingState={loadingState}
+        hasError={hasError}
         onInputChange={onInputChange}
         onSelect={navigateToCity}
         onClear={handleClear}

@@ -71,6 +71,30 @@ describe("useCitySearch", () => {
     expect(fetchMock).toHaveBeenCalledTimes(1);
   });
 
+  it("exposes hasError when the fetch rejects", async () => {
+    const fetchMock = vi.fn().mockRejectedValue(new TypeError("offline"));
+    vi.stubGlobal("fetch", fetchMock);
+
+    const { result } = renderHook(() => useCitySearch(""), { wrapper });
+    act(() => result.current.onInputChange("Lv"));
+
+    await waitFor(() => expect(result.current.hasError).toBe(true));
+    expect(result.current.items).toEqual([]);
+  });
+
+  it("exposes hasError when the response is not ok", async () => {
+    const fetchMock = vi
+      .fn()
+      .mockResolvedValue({ ok: false, status: 500 } as Response);
+    vi.stubGlobal("fetch", fetchMock);
+
+    const { result } = renderHook(() => useCitySearch(""), { wrapper });
+    act(() => result.current.onInputChange("Lv"));
+
+    await waitFor(() => expect(result.current.hasError).toBe(true));
+    expect(result.current.items).toEqual([]);
+  });
+
   it("clear resets input and items immediately", async () => {
     mockFetchOk([lviv]);
 
