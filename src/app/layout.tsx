@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
-import { Providers } from "@/features/theme/providers";
+import { ThemeProvider } from "next-themes";
 import { Toast } from "@heroui/react";
 import "./globals.css";
 
@@ -31,10 +31,10 @@ export default function RootLayout({
       suppressHydrationWarning
     >
       <body className="min-h-full flex flex-col bg-background text-foreground">
-        <Providers>
+        <ThemeProvider attribute="class" defaultTheme="system">
           <Toast.Provider placement="bottom" />
           {children}
-        </Providers>
+        </ThemeProvider>
       </body>
     </html>
   );
