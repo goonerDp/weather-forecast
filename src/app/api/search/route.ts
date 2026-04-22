@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import type { CitySearchResult } from "@/features/search/types";
+import type { CitySearchResult } from "@/features/search";
 import { getSearchUrl } from "@/lib/weather-api";
 
 export async function GET(request: NextRequest) {

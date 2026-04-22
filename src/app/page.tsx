@@ -1,9 +1,11 @@
 import { Suspense } from "react";
-import { Search } from "@/features/search/search";
-import { WeatherSection } from "@/features/weather/weather-section";
-import { WeatherCardSkeleton } from "@/features/weather/weather-card-skeleton";
-import { WeatherErrorBoundary } from "@/features/weather/weather-error-boundary";
-import { ThemeSwitcher } from "@/features/theme/theme-switcher";
+import { Search } from "@/features/search";
+import {
+  WeatherSection,
+  WeatherCardSkeleton,
+  WeatherErrorBoundary,
+} from "@/features/weather";
+import { ThemeSwitcher } from "@/features/theme";
 
 export default async function Home({
   searchParams,
