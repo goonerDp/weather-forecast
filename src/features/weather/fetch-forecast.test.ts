@@ -114,17 +114,4 @@ describe("fetchForecast", () => {
     const [calledUrl] = fetchMock.mock.calls[0];
     expect(calledUrl).toContain("q=New%20York");
   });
-
-  it("clamps days to the [1, 3] range", async () => {
-    const fetchMock = mockFetchOk(forecastFixture);
-
-    await fetchForecast("Lviv", 10);
-    expect(fetchMock.mock.calls[0][0]).toContain("days=3");
-
-    await fetchForecast("Lviv", 0);
-    expect(fetchMock.mock.calls[1][0]).toContain("days=1");
-
-    await fetchForecast("Lviv", -5);
-    expect(fetchMock.mock.calls[2][0]).toContain("days=1");
-  });
 });

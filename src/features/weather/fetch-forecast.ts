@@ -1,23 +1,17 @@
 import type { WeatherData } from "./types";
 
-const REVALIDATE_SECONDS = 900; // 15 minutes
-const MAX_DAYS = 3;
-
 export async function fetchForecast(
   city: string,
   days: number = 1,
 ): Promise<WeatherData | null> {
   const apiKey = process.env.WEATHER_API_KEY;
+
   if (!apiKey) {
     throw new Error("API key not configured");
   }
 
-  const clampedDays = Math.min(Math.max(days, 1), MAX_DAYS);
-  const url = `https://api.weatherapi.com/v1/forecast.json?key=${apiKey}&q=${encodeURIComponent(city)}&days=${clampedDays}`;
-
-  const res = await fetch(url, {
-    next: { revalidate: REVALIDATE_SECONDS },
-  });
+  const url = `https://api.weatherapi.com/v1/forecast.json?key=${apiKey}&q=${encodeURIComponent(city)}&days=${days}`;
+  const res = await fetch(url);
 
   if (!res.ok) {
     if (res.status === 400) {
