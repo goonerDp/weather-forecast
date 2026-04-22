@@ -42,5 +42,6 @@ export async function fetchForecast(
     sunset: forecast.astro.sunset,
     forecastDate: forecast.date,
     lastUpdated: raw.current.last_updated,
+    timezone: raw.location.tz_id,
   };
 }

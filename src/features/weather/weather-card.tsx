@@ -51,7 +51,7 @@ export function WeatherCard({ data }: WeatherCardProps) {
         </dl>
       </Card.Content>
       <Card.Footer className="text-xs text-foreground/50">
-        Updated {data.lastUpdated}
+        Updated {data.lastUpdated} &middot; {data.timezone}
       </Card.Footer>
     </Card>
   );

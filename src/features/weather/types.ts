@@ -15,4 +15,5 @@ export interface WeatherData {
   sunset: string;
   forecastDate: string;
   lastUpdated: string;
+  timezone: string;
 }

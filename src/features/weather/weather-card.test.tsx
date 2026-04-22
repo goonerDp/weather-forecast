@@ -31,6 +31,7 @@ const baseData: WeatherData = {
   sunset: "08:07 PM",
   forecastDate: "2026-04-21",
   lastUpdated: "2026-04-21 22:00",
+  timezone: "Europe/Kyiv",
 };
 
 describe("WeatherCard", () => {
@@ -78,6 +79,8 @@ describe("WeatherCard", () => {
     expect(screen.getByText("05:52 AM")).toBeDefined();
     expect(screen.getByText("Sunset")).toBeDefined();
     expect(screen.getByText("08:07 PM")).toBeDefined();
-    expect(screen.getByText(/Updated 2026-04-21 22:00/)).toBeDefined();
+    expect(
+      screen.getByText(/Updated 2026-04-21 22:00.*Europe\/Kyiv/),
+    ).toBeDefined();
   });
 });

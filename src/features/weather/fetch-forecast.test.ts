@@ -2,7 +2,12 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { fetchForecast } from "./fetch-forecast";
 
 const forecastFixture = {
-  location: { name: "Lviv", region: "Lviv Oblast", country: "Ukraine" },
+  location: {
+    name: "Lviv",
+    region: "Lviv Oblast",
+    country: "Ukraine",
+    tz_id: "Europe/Kyiv",
+  },
   current: {
     temp_c: 12.5,
     condition: {
@@ -98,6 +103,7 @@ describe("fetchForecast", () => {
       sunset: "08:07 PM",
       forecastDate: "2026-04-21",
       lastUpdated: "2026-04-21 22:00",
+      timezone: "Europe/Kyiv",
     });
 
     const [calledUrl] = fetchMock.mock.calls[0];
