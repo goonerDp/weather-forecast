@@ -3,8 +3,14 @@ import { cleanup, fireEvent, render, screen } from "@testing-library/react";
 import { Combobox } from "./combobox";
 import type { CitySearchResult } from "./types";
 
-const lviv: CitySearchResult = { name: "Lviv", region: "", country: "Ukraine" };
+const lviv: CitySearchResult = {
+  id: 1,
+  name: "Lviv",
+  region: "",
+  country: "Ukraine",
+};
 const london: CitySearchResult = {
+  id: 3,
   name: "London",
   region: "City of London",
   country: "UK",

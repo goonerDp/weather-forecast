@@ -3,7 +3,7 @@ import type { CitySearchResult } from "./types";
 export const MAX_HISTORY = 5;
 
 export function getCityKey(city: CitySearchResult): string {
-  return `${city.name}-${city.region}-${city.country}`;
+  return String(city.id);
 }
 
 export function addItem(

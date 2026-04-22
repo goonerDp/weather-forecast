@@ -1,4 +1,5 @@
 import type { WeatherData } from "./types";
+import { getForecastUrl } from "@/lib/weather-api";
 
 export async function fetchForecast(
   city: string,
@@ -10,7 +11,7 @@ export async function fetchForecast(
     throw new Error("API key not configured");
   }
 
-  const url = `https://api.weatherapi.com/v1/forecast.json?key=${apiKey}&q=${encodeURIComponent(city)}&days=${days}`;
+  const url = getForecastUrl(apiKey, city, days);
   const res = await fetch(url);
 
   if (!res.ok) {

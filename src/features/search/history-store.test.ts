@@ -9,9 +9,20 @@ import {
 import { MAX_HISTORY, addItem, getCityKey, removeItem } from "./history-domain";
 import type { CitySearchResult } from "./types";
 
-const lviv: CitySearchResult = { name: "Lviv", region: "", country: "Ukraine" };
-const kyiv: CitySearchResult = { name: "Kyiv", region: "", country: "Ukraine" };
+const lviv: CitySearchResult = {
+  id: 1,
+  name: "Lviv",
+  region: "",
+  country: "Ukraine",
+};
+const kyiv: CitySearchResult = {
+  id: 2,
+  name: "Kyiv",
+  region: "",
+  country: "Ukraine",
+};
 const london: CitySearchResult = {
+  id: 3,
   name: "London",
   region: "City of London",
   country: "UK",
@@ -28,6 +39,7 @@ describe("addItem", () => {
 
   it("treats same name in different countries as distinct", () => {
     const londonOnt: CitySearchResult = {
+      id: 4,
       name: "London",
       region: "Ontario",
       country: "Canada",
@@ -37,6 +49,7 @@ describe("addItem", () => {
 
   it("caps the list at max items, evicting the oldest", () => {
     const seed = Array.from({ length: MAX_HISTORY }, (_, i) => ({
+      id: 100 + i,
       name: `City${i}`,
       region: "",
       country: "X",

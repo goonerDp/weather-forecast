@@ -27,6 +27,8 @@ export function parseHistory(
       (entry: unknown): entry is CitySearchResult =>
         typeof entry === "object" &&
         entry !== null &&
+        "id" in entry &&
+        typeof entry.id === "number" &&
         "name" in entry &&
         typeof entry.name === "string" &&
         "region" in entry &&

@@ -55,8 +55,7 @@ export function useCitySearch(defaultValue: string) {
     inputValue,
     loadingState,
     hasError,
-    onInputChange: setInputValue,
+    setInputValue,
     clear,
-    setValue: setInputValue,
   };
 }

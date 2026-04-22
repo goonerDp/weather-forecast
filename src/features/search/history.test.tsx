@@ -12,11 +12,17 @@ import { writeHistory } from "./history-store";
 import type { CitySearchResult } from "./types";
 
 const lviv: CitySearchResult = {
+  id: 1,
   name: "Lviv",
   region: "Lviv Oblast",
   country: "Ukraine",
 };
-const kyiv: CitySearchResult = { name: "Kyiv", region: "", country: "Ukraine" };
+const kyiv: CitySearchResult = {
+  id: 2,
+  name: "Kyiv",
+  region: "",
+  country: "Ukraine",
+};
 
 function renderHistory(onSelect = vi.fn()) {
   return {

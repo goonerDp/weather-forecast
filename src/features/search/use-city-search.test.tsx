@@ -5,7 +5,12 @@ import type { PropsWithChildren } from "react";
 import { DEBOUNCE_MS, useCitySearch } from "./use-city-search";
 import type { CitySearchResult } from "./types";
 
-const lviv: CitySearchResult = { name: "Lviv", region: "", country: "Ukraine" };
+const lviv: CitySearchResult = {
+  id: 1,
+  name: "Lviv",
+  region: "",
+  country: "Ukraine",
+};
 
 function wrapper({ children }: PropsWithChildren) {
   return (
@@ -45,7 +50,7 @@ describe("useCitySearch", () => {
     vi.stubGlobal("fetch", fetchMock);
 
     const { result } = renderHook(() => useCitySearch(""), { wrapper });
-    act(() => result.current.onInputChange("L"));
+    act(() => result.current.setInputValue("L"));
     await flushDebounce();
 
     expect(fetchMock).not.toHaveBeenCalled();
@@ -56,7 +61,7 @@ describe("useCitySearch", () => {
     const fetchMock = mockFetchOk([lviv]);
 
     const { result } = renderHook(() => useCitySearch(""), { wrapper });
-    act(() => result.current.onInputChange("Lv"));
+    act(() => result.current.setInputValue("Lv"));
     expect(fetchMock).not.toHaveBeenCalled();
 
     await flushDebounce();
@@ -70,14 +75,14 @@ describe("useCitySearch", () => {
     const fetchMock = mockFetchOk([lviv]);
 
     const { result } = renderHook(() => useCitySearch(""), { wrapper });
-    act(() => result.current.onInputChange("Lv"));
+    act(() => result.current.setInputValue("Lv"));
     await flushDebounce();
     expect(result.current.items).toEqual([lviv]);
 
     act(() => result.current.clear());
     expect(result.current.items).toEqual([]);
 
-    act(() => result.current.onInputChange("Lv"));
+    act(() => result.current.setInputValue("Lv"));
     await flushDebounce();
     expect(result.current.items).toEqual([lviv]);
 
@@ -89,7 +94,7 @@ describe("useCitySearch", () => {
     vi.stubGlobal("fetch", fetchMock);
 
     const { result } = renderHook(() => useCitySearch(""), { wrapper });
-    act(() => result.current.onInputChange("Lv"));
+    act(() => result.current.setInputValue("Lv"));
     await flushDebounce();
 
     expect(result.current.hasError).toBe(true);
@@ -103,7 +108,7 @@ describe("useCitySearch", () => {
     vi.stubGlobal("fetch", fetchMock);
 
     const { result } = renderHook(() => useCitySearch(""), { wrapper });
-    act(() => result.current.onInputChange("Lv"));
+    act(() => result.current.setInputValue("Lv"));
     await flushDebounce();
 
     expect(result.current.hasError).toBe(true);
@@ -114,7 +119,7 @@ describe("useCitySearch", () => {
     mockFetchOk([lviv]);
 
     const { result } = renderHook(() => useCitySearch(""), { wrapper });
-    act(() => result.current.onInputChange("Lv"));
+    act(() => result.current.setInputValue("Lv"));
     await flushDebounce();
     expect(result.current.items).toEqual([lviv]);
 

@@ -5,9 +5,20 @@ import { STORAGE_KEY, writeHistory } from "./history-store";
 import { getCityKey } from "./history-domain";
 import type { CitySearchResult } from "./types";
 
-const lviv: CitySearchResult = { name: "Lviv", region: "", country: "Ukraine" };
-const kyiv: CitySearchResult = { name: "Kyiv", region: "", country: "Ukraine" };
+const lviv: CitySearchResult = {
+  id: 1,
+  name: "Lviv",
+  region: "",
+  country: "Ukraine",
+};
+const kyiv: CitySearchResult = {
+  id: 2,
+  name: "Kyiv",
+  region: "",
+  country: "Ukraine",
+};
 const london: CitySearchResult = {
+  id: 3,
   name: "London",
   region: "City of London",
   country: "UK",

@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import type { CitySearchResult } from "@/features/search/types";
+import { getSearchUrl } from "@/lib/weather-api";
 
 export async function GET(request: NextRequest) {
   const q = request.nextUrl.searchParams.get("q");
@@ -16,7 +17,7 @@ export async function GET(request: NextRequest) {
     );
   }
 
-  const url = `https://api.weatherapi.com/v1/search.json?key=${apiKey}&q=${encodeURIComponent(q)}`;
+  const url = getSearchUrl(apiKey, q);
 
   let res: Response;
 
@@ -40,7 +41,13 @@ export async function GET(request: NextRequest) {
   const data = await res.json();
 
   const results: CitySearchResult[] = data.map(
-    (item: { name: string; region: string; country: string }) => ({
+    (item: {
+      id: number;
+      name: string;
+      region: string;
+      country: string;
+    }) => ({
+      id: item.id,
       name: item.name,
       region: item.region,
       country: item.country,

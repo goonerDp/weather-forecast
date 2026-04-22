@@ -12,11 +12,13 @@ import { readHistory } from "./history-store";
 import type { CitySearchResult } from "./types";
 
 const lviv: CitySearchResult = {
+  id: 1,
   name: "Lviv",
   region: "Lviv Oblast",
   country: "Ukraine",
 };
 const newYork: CitySearchResult = {
+  id: 5,
   name: "New York",
   region: "New York",
   country: "United States",

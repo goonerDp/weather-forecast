@@ -107,8 +107,8 @@ describe("GET /api/search", () => {
 
     expect(res.status).toBe(200);
     expect(await res.json()).toEqual([
-      { name: "Lviv", region: "Lviv Oblast", country: "Ukraine" },
-      { name: "London", region: "City of London", country: "UK" },
+      { id: 1, name: "Lviv", region: "Lviv Oblast", country: "Ukraine" },
+      { id: 2, name: "London", region: "City of London", country: "UK" },
     ]);
     expect(res.headers.get("Cache-Control")).toBe(
       "public, s-maxage=3600, stale-while-revalidate=86400",
