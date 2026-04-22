@@ -1,7 +1,12 @@
 export function formatForecastDate(date: string): string {
   const [y, m, d] = date.split("-").map(Number);
+  const parsed = new Date(y, m - 1, d);
 
-  return new Date(y, m - 1, d).toLocaleDateString(undefined, {
+  if (Number.isNaN(parsed.getTime())) {
+    return date;
+  }
+
+  return parsed.toLocaleDateString(undefined, {
     weekday: "long",
     month: "short",
     day: "numeric",

@@ -6,6 +6,10 @@ export default defineConfig({
   test: {
     environment: "jsdom",
     setupFiles: ["./vitest.setup.ts"],
+    alias: {
+      "server-only": new URL("./vitest.server-only.ts", import.meta.url)
+        .pathname,
+    },
   },
   resolve: {
     tsconfigPaths: true,

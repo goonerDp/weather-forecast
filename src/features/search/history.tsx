@@ -12,8 +12,9 @@ import { getCityKey } from "./history-domain";
 import { useSearchHistory } from "./use-search-history";
 import { formatCity } from "@/lib/format-city";
 import { RemovedToast } from "./removed-toast";
-import { TOAST_UNDO_TIMEOUT } from "./consts";
 import type { CitySearchResult } from "./types";
+
+const UNDO_TIMEOUT_MS = 5000;
 
 interface HistoryProps {
   onSelect: (city: CitySearchResult) => void;
@@ -61,7 +62,7 @@ export function History({ onSelect }: HistoryProps) {
     }
 
     const toastId = toast(<RemovedToast city={removed} />, {
-      timeout: TOAST_UNDO_TIMEOUT,
+      timeout: UNDO_TIMEOUT_MS,
       actionProps: {
         children: "Undo",
         variant: "tertiary",

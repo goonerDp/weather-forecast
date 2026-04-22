@@ -39,7 +39,7 @@ The project follows a lightweight **feature-sliced** layout. Framework-level con
 
 ### Data flow
 
-- **Forecast** is fetched on the server (`src/features/weather/fetch-forecast.ts`) and streamed into the RSC via `<Suspense>` + `<WeatherErrorBoundary>` (`src/features/weather/weather-error-boundary.tsx`). The URL (`?city=Lviv`) is the source of truth — links and reloads are shareable.
+- **Forecast** is fetched on the server (`src/features/weather/fetch-forecast.ts`) and streamed into the RSC via `<Suspense>` + `<WeatherErrorBoundary>` (`src/features/weather/weather-error-boundary.tsx`). The URL (`?city=Lviv`) is the source of truth — links and reloads are shareable. The `fetch` call is intentionally uncached so each navigation returns fresh weather; adding `next: { revalidate }` would serve stale conditions across reloads.
 - **Autocomplete** runs on the client. `useCitySearch` (`src/features/search/use-city-search.ts`) debounces the input, fetches through `/api/search` (the proxy in `src/app/api/search/route.ts`), and caches responses with SWR so repeated queries are free.
 - **History** is stored in `localStorage` and exposed through `useSearchHistory` (`src/features/search/use-search-history.ts`), which uses `useSyncExternalStore` so React stays in sync with storage mutations — including cross-tab changes via the `storage` event.
 - **Undo** is implemented by capturing the removed item's original index and restoring it via the HeroUI toast's action button (`src/features/search/history.tsx`).

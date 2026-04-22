@@ -1,3 +1,4 @@
+import "server-only";
 import type { WeatherData } from "./types";
 import { getForecastUrl } from "@/lib/weather-api";
 
