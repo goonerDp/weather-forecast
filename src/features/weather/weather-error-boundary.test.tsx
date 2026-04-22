@@ -7,8 +7,9 @@ const { retryMock, resetMock } = vi.hoisted(() => ({
 }));
 
 vi.mock("next/error", () => ({
-  unstable_catchError:
-    (fallback: (props: object, info: object) => React.ReactNode) =>
+  unstable_catchError: (
+    fallback: (props: object, info: object) => React.ReactNode,
+  ) =>
     function StubBoundary(props: object) {
       return fallback(props, {
         error: new Error("boom"),

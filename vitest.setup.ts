@@ -1,7 +1,9 @@
 // jsdom does not expose the CSS namespace that react-aria relies on for
 // building querySelector strings. Polyfill the one method it uses.
 if (typeof globalThis.CSS === "undefined") {
-  (globalThis as unknown as { CSS: { escape: (value: string) => string } }).CSS = {
+  (
+    globalThis as unknown as { CSS: { escape: (value: string) => string } }
+  ).CSS = {
     escape: (value: string) => String(value).replace(/[^a-zA-Z0-9_-]/g, "\\$&"),
   };
 }
@@ -28,6 +30,7 @@ if (typeof globalThis.ResizeObserver === "undefined") {
     unobserve() {}
     disconnect() {}
   }
-  (globalThis as unknown as { ResizeObserver: typeof ResizeObserverStub }).ResizeObserver =
-    ResizeObserverStub;
+  (
+    globalThis as unknown as { ResizeObserver: typeof ResizeObserverStub }
+  ).ResizeObserver = ResizeObserverStub;
 }

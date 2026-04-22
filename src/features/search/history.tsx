@@ -1,13 +1,6 @@
 "use client";
 
-import {
-  Key,
-  Label,
-  Selection,
-  Tag,
-  TagGroup,
-  toast,
-} from "@heroui/react";
+import { Key, Label, Selection, Tag, TagGroup, toast } from "@heroui/react";
 import { getCityKey } from "./history-domain";
 import { useSearchHistory } from "./use-search-history";
 import { formatCity } from "@/lib/format-city";

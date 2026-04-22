@@ -41,12 +41,7 @@ export async function GET(request: NextRequest) {
   const data = await res.json();
 
   const results: CitySearchResult[] = data.map(
-    (item: {
-      id: number;
-      name: string;
-      region: string;
-      country: string;
-    }) => ({
+    (item: { id: number; name: string; region: string; country: string }) => ({
       id: item.id,
       name: item.name,
       region: item.region,
