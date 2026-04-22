@@ -127,4 +127,15 @@ describe("useCitySearch", () => {
     expect(result.current.inputValue).toBe("");
     expect(result.current.items).toEqual([]);
   });
+
+  it("reports idle loadingState after clearing while debounce is pending", async () => {
+    mockFetchOk([lviv]);
+
+    const { result } = renderHook(() => useCitySearch(""), { wrapper });
+    act(() => result.current.setInputValue("Lv"));
+    await flushDebounce();
+
+    act(() => result.current.clear());
+    expect(result.current.loadingState).toBe("idle");
+  });
 });

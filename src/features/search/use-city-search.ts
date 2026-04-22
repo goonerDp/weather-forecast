@@ -41,11 +41,13 @@ export function useCitySearch(defaultValue: string) {
 
   const items = shouldFetch ? (data ?? []) : [];
   const isDebouncing = trimmedRaw !== trimmedDebounced;
-  const loadingState: LoadingState = isLoading
-    ? "loading"
-    : isDebouncing || isValidating
-      ? "filtering"
-      : "idle";
+  const loadingState: LoadingState = !shouldFetch
+    ? "idle"
+    : isLoading
+      ? "loading"
+      : isDebouncing || isValidating
+        ? "filtering"
+        : "idle";
   const hasError = shouldFetch && Boolean(error);
 
   const clear = useCallback(() => setInputValue(""), []);
