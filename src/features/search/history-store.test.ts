@@ -62,12 +62,20 @@ describe("addItem", () => {
 });
 
 describe("removeItem", () => {
-  it("removes by key", () => {
-    expect(removeItem([lviv, kyiv], getCityKey(kyiv))).toEqual([lviv]);
+  it("removes by key and reports the removed item and index", () => {
+    expect(removeItem([lviv, kyiv], getCityKey(kyiv))).toEqual({
+      list: [lviv],
+      removed: kyiv,
+      removedIndex: 1,
+    });
   });
 
   it("is a no-op when key is not present", () => {
-    expect(removeItem([lviv], "nope")).toEqual([lviv]);
+    expect(removeItem([lviv], "nope")).toEqual({
+      list: [lviv],
+      removed: null,
+      removedIndex: -1,
+    });
   });
 });
 

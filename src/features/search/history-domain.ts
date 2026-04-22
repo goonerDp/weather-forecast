@@ -20,28 +20,20 @@ export function addItem(
 export function removeItem(
   list: CitySearchResult[],
   key: string,
-): CitySearchResult[] {
-  return list.filter((entry) => getCityKey(entry) !== key);
-}
-
-export function removeItemWithUndo(
-  list: CitySearchResult[],
-  key: string,
 ): {
-  next: CitySearchResult[];
+  list: CitySearchResult[];
   removed: CitySearchResult | null;
   removedIndex: number;
 } {
   const idx = list.findIndex((entry) => getCityKey(entry) === key);
 
   if (idx === -1) {
-    return { next: list, removed: null, removedIndex: -1 };
+    return { list, removed: null, removedIndex: -1 };
   }
 
-  const removed = list[idx] ?? null;
-  const next = list.filter((entry) => getCityKey(entry) !== key);
+  const next = [...list.slice(0, idx), ...list.slice(idx + 1)];
 
-  return { next, removed, removedIndex: idx };
+  return { list: next, removed: list[idx], removedIndex: idx };
 }
 
 export function insertItemAt(

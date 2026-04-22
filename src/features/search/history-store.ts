@@ -4,7 +4,6 @@ import {
   addItem,
   insertItemAt,
   removeItem,
-  removeItemWithUndo,
 } from "./history-domain";
 
 export const STORAGE_KEY = "weather-forecast:history";
@@ -87,24 +86,18 @@ export function addToHistory(
 }
 
 export function removeFromHistory(key: string): CitySearchResult[] {
-  return mutateHistory((prev) => removeItem(prev, key));
+  return mutateHistory((prev) => removeItem(prev, key).list);
 }
 
 export function removeFromHistoryWithUndo(key: string): {
   removed: CitySearchResult | null;
   removedIndex: number;
 } {
-  let removed: CitySearchResult | null = null;
-  let removedIndex = -1;
+  const result = removeItem(readHistory(), key);
 
-  mutateHistory((prev) => {
-    const result = removeItemWithUndo(prev, key);
-    removed = result.removed;
-    removedIndex = result.removedIndex;
-    return result.next;
-  });
+  writeHistory(result.list);
 
-  return { removed, removedIndex };
+  return { removed: result.removed, removedIndex: result.removedIndex };
 }
 
 export function restoreHistoryItem(
