@@ -3,6 +3,7 @@ import type { WeatherData } from "./types";
 import Image from "next/image";
 import { Stat } from "./stat";
 import { getWeatherIconUrl } from "./icon-url";
+import { RelativeTime } from "./relative-time";
 import { formatForecastDate } from "@/lib/format-forecast-date";
 
 interface WeatherCardProps {
@@ -51,7 +52,13 @@ export function WeatherCard({ data }: WeatherCardProps) {
         </dl>
       </Card.Content>
       <Card.Footer className="text-xs text-foreground/50">
-        Updated {data.lastUpdated} &middot; {data.timezone}
+        <span>
+          Updated{" "}
+          <RelativeTime
+            epochMs={data.lastUpdatedEpochMs}
+            className="font-medium text-foreground/80"
+          />
+        </span>
       </Card.Footer>
     </Card>
   );

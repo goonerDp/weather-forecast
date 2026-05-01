@@ -30,8 +30,7 @@ const baseData: WeatherData = {
   sunrise: "05:52 AM",
   sunset: "08:07 PM",
   forecastDate: "2026-04-21",
-  lastUpdated: "2026-04-21 22:00",
-  timezone: "Europe/Kyiv",
+  lastUpdatedEpochMs: Date.parse("2026-04-21T22:00:00Z"),
 };
 
 describe("WeatherCard", () => {
@@ -69,7 +68,7 @@ describe("WeatherCard", () => {
   });
 
   it("renders wind, humidity, sunrise, sunset, and last-updated stats", () => {
-    render(<WeatherCard data={baseData} />);
+    const { container } = render(<WeatherCard data={baseData} />);
 
     expect(screen.getByText("Wind")).toBeDefined();
     expect(screen.getByText("9 kph NW")).toBeDefined();
@@ -79,8 +78,9 @@ describe("WeatherCard", () => {
     expect(screen.getByText("05:52 AM")).toBeDefined();
     expect(screen.getByText("Sunset")).toBeDefined();
     expect(screen.getByText("08:07 PM")).toBeDefined();
-    expect(
-      screen.getByText(/Updated 2026-04-21 22:00.*Europe\/Kyiv/),
-    ).toBeDefined();
+
+    const time = container.querySelector("time");
+    expect(time?.getAttribute("datetime")).toBe("2026-04-21T22:00:00.000Z");
+    expect(container.textContent).toContain("Updated");
   });
 });

@@ -33,8 +33,7 @@ const fixture: WeatherData = {
   sunrise: "05:52 AM",
   sunset: "08:07 PM",
   forecastDate: "2026-04-21",
-  lastUpdated: "2026-04-21 22:00",
-  timezone: "Europe/Kyiv",
+  lastUpdatedEpochMs: Date.parse("2026-04-21T22:00:00Z"),
 };
 
 afterEach(() => {

@@ -18,7 +18,7 @@ const forecastFixture = {
     wind_dir: "NW",
     feelslike_c: 11.2,
     humidity: 54,
-    last_updated: "2026-04-21 22:00",
+    last_updated_epoch: 1776643200,
   },
   forecast: {
     forecastday: [
@@ -102,8 +102,7 @@ describe("fetchForecast", () => {
       sunrise: "05:52 AM",
       sunset: "08:07 PM",
       forecastDate: "2026-04-21",
-      lastUpdated: "2026-04-21 22:00",
-      timezone: "Europe/Kyiv",
+      lastUpdatedEpochMs: 1776643200000,
     });
 
     const [calledUrl] = fetchMock.mock.calls[0];
