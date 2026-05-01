@@ -1,5 +1,5 @@
 import { fetchForecast } from "./fetch-forecast";
-import { WeatherCard } from "./weather-card";
+import { WeatherCardLive } from "./weather-card-live";
 
 export async function WeatherSection({ city }: { city: string }) {
   const forecastData = await fetchForecast(city);
@@ -12,5 +12,5 @@ export async function WeatherSection({ city }: { city: string }) {
     );
   }
 
-  return <WeatherCard data={forecastData} />;
+  return <WeatherCardLive city={city} initialData={forecastData} />;
 }

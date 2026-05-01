@@ -6,7 +6,7 @@ export function formatForecastDate(date: string): string {
     return date;
   }
 
-  return parsed.toLocaleDateString(undefined, {
+  return parsed.toLocaleDateString("en-US", {
     weekday: "long",
     month: "short",
     day: "numeric",
