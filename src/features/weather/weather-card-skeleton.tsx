@@ -12,7 +12,11 @@ export function WeatherCardSkeleton() {
       </Card.Header>
       <Card.Content className="flex flex-col gap-6">
         <div className="flex flex-col gap-2">
-          <Skeleton className="h-14 w-40" />
+          <Skeleton className="h-4 w-32" />
+          <div className="flex items-end gap-3">
+            <Skeleton className="h-14 w-24" />
+            <Skeleton className="h-5 w-40" />
+          </div>
           <Skeleton className="h-4 w-3/4" />
         </div>
         <div className="grid grid-cols-2 gap-3">
@@ -22,6 +26,9 @@ export function WeatherCardSkeleton() {
           <Skeleton className="h-12" />
         </div>
       </Card.Content>
+      <Card.Footer>
+        <Skeleton className="h-3 w-36" />
+      </Card.Footer>
     </Card>
   );
 }
